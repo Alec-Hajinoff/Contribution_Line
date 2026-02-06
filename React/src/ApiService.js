@@ -3,7 +3,7 @@
 export const registerUser = async (formData) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Readings_From_Sensors/form_capture.php",
+      "http://localhost:8001/Contribution_Line/form_capture.php",
       {
         method: "POST",
         headers: {
@@ -25,7 +25,7 @@ export const registerUser = async (formData) => {
 export const loginUser = async (formData) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Readings_From_Sensors/login_capture.php",
+      "http://localhost:8001/Contribution_Line/login_capture.php",
       {
         method: "POST",
         headers: {
@@ -71,7 +71,7 @@ export const pullReadingsFunction = async () => {
 export const logoutUser = async () => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Readings_From_Sensors/logout_component.php",
+      "http://localhost:8001/Contribution_Line/logout_component.php",
       {
         method: "POST",
         credentials: "include",
