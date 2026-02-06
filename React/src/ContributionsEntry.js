@@ -1,8 +1,8 @@
 import React from "react";
-import "./PullReadings.css";
+import "./ContributionsEntry.css";
 import LogoutComponent from "./LogoutComponent";
 
-function PullReadings() {
+function ContributionsEntry() {
   return (
     <div className="container">
       <div className="d-flex justify-content-end mb-3">
@@ -14,4 +14,4 @@ function PullReadings() {
   );
 }
 
-export default PullReadings;
+export default ContributionsEntry;

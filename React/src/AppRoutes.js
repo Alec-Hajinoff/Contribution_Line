@@ -1,7 +1,7 @@
 import { Routes, Route } from "react-router-dom";
 import MainRegLog from "./MainRegLog";
 import RegisteredPage from "./RegisteredPage";
-import PullReadings from "./PullReadings";
+import ContributionsEntry from "./ContributionsEntry";
 import LogoutComponent from "./LogoutComponent";
 import React from "react";
 
@@ -10,7 +10,7 @@ export default function AppRoutes() {
     <Routes>
       <Route path="/" element={<MainRegLog />} />
       <Route path="RegisteredPage" element={<RegisteredPage />} />
-      <Route path="PullReadings" element={<PullReadings />} />
+      <Route path="ContributionsEntry" element={<ContributionsEntry />} />
       <Route path="LogoutComponent" element={<LogoutComponent />} />
     </Routes>
   );
