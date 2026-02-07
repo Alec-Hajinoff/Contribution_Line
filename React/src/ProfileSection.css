@@ -1,47 +1,47 @@
 .profile-section {
   background: #f8f9fa;
-  padding: 20px;
-  border-radius: 8px;
+  padding: 16px;
+  border-radius: 6px;
   width: 100%;
 }
 
 .profile-section h3 {
-  font-size: 1.25rem;
-  margin-bottom: 20px;
+  font-size: 1.1rem;
+  margin-bottom: 12px;
   color: #333;
 }
 
 .profile-row {
   display: flex;
   align-items: center;
-  gap: 15px;
-  margin-bottom: 15px;
-  padding: 10px;
-  background: white;
+  gap: 10px;
+  margin-bottom: 10px;
+  padding: 8px;
+  background: #fff;
   border-radius: 4px;
-  border: 1px solid #e0e0e0;
+  border: 1px solid #e6e6e6;
 }
 
 .profile-row label {
   font-weight: 600;
-  color: #555;
-  min-width: 100px;
+  color: #444;
+  min-width: 90px;
   margin: 0;
 }
 
 .profile-value {
   flex: 1;
-  color: #666;
+  color: #555;
 }
 
 .profile-value em {
-  color: #aaa;
+  color: #999;
   font-style: italic;
 }
 
 .profile-input {
   flex: 1;
-  padding: 8px 12px;
+  padding: 6px 10px;
   border: 1px solid #007bff;
   border-radius: 4px;
   font-size: 0.95rem;
@@ -50,50 +50,36 @@
 .profile-input:focus {
   outline: none;
   border-color: #0056b3;
-  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.25);
+  box-shadow: 0 0 0 3px rgba(0, 123, 255, 0.12);
 }
 
 .profile-actions {
   display: flex;
-  gap: 8px;
+  gap: 6px;
 }
 
 .btn-icon {
   background: none;
   border: none;
-  font-size: 1.1rem;
+  font-size: 1rem;
   cursor: pointer;
-  padding: 5px 8px;
+  padding: 4px 6px;
   border-radius: 4px;
-  transition: background-color 0.2s;
 }
 
 .btn-icon:hover {
-  background-color: #e9ecef;
+  background-color: #f1f1f1;
 }
 
 .btn-save {
   color: #28a745;
 }
-
-.btn-save:hover {
-  background-color: #d4edda;
-}
-
-.btn-cancel {
+.btn-cancel,
+.btn-clear {
   color: #dc3545;
 }
-
-.btn-cancel:hover {
-  background-color: #f8d7da;
-}
-
 .btn-edit {
   color: #007bff;
-}
-
-.btn-edit:hover {
-  background-color: #d1ecf1;
 }
 
 .spinner-border {
@@ -101,7 +87,7 @@
 }
 
 .alert-sm {
-  padding: 8px 12px;
-  margin-bottom: 15px;
+  padding: 8px 10px;
+  margin-bottom: 10px;
   font-size: 0.9rem;
 }

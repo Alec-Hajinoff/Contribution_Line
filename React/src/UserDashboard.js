@@ -5,7 +5,7 @@ import ProfileSection from "./ProfileSection";
 
 function UserDashboard() {
   return (
-    <div className="container-fluid">
+    <div className="container">
       <div className="d-flex justify-content-end mb-3">
         <LogoutComponent />
       </div>
@@ -16,32 +16,10 @@ function UserDashboard() {
         <div className="col-md-4">
           <ProfileSection />
         </div>
-        <div className="col-md-8">
-          {/* Future content goes here */}
-        </div>
+        <div className="col-md-8"></div>
       </div>
     </div>
   );
 }
 
 export default UserDashboard;
-
-/*
-import React from "react";
-import "./UserDashboard.css";
-import LogoutComponent from "./LogoutComponent";
-
-function UserDashboard() {
-  return (
-    <div className="container">
-      <div className="d-flex justify-content-end mb-3">
-        <LogoutComponent />
-      </div>
-
-      <h1>Welcome to your dashboard</h1>
-    </div>
-  );
-}
-
-export default UserDashboard;
-*/
