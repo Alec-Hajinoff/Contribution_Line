@@ -62,3 +62,34 @@ export const logoutUser = async () => {
     throw new Error("An error occurred during logout.");
   }
 };
+
+export const profileSection = async (method = "GET", data = null) => {
+  try {
+    const options = {
+      method,
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    };
+
+    if (method === "POST" && data) {
+      options.body = JSON.stringify(data);
+    }
+
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/profile_section.php",
+      options,
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const responseData = await response.json();
+    return responseData;
+  } catch (error) {
+    console.error("Error:", error);
+    throw new Error("An error occurred while accessing profile data.");
+  }
+};
