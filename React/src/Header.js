@@ -1,5 +1,6 @@
 import React from "react";
-import blue from "./Readings_From_Sensors_Logo.png";
+import blue from "./ContributionLineLogoColoured.png";
+
 import "./Header.css";
 
 function Header() {
