@@ -1,8 +1,8 @@
 import React from "react";
-import "./ContributionsEntry.css";
+import "./UserDashboard.css";
 import LogoutComponent from "./LogoutComponent";
 
-function ContributionsEntry() {
+function UserDashboard() {
   return (
     <div className="container">
       <div className="d-flex justify-content-end mb-3">
@@ -14,4 +14,4 @@ function ContributionsEntry() {
   );
 }
 
-export default ContributionsEntry;
+export default UserDashboard;
