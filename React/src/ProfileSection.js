@@ -1,3 +1,5 @@
+// ProfileSection.js allows a user to set up their profile.
+
 import React, { useState, useEffect } from "react";
 import "./ProfileSection.css";
 import { profileSectionGet, profileSectionPost } from "./ApiService";
