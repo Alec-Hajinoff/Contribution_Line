@@ -50,8 +50,6 @@ try {
         $current_role = isset($user['current_role']) ? $user['current_role'] : '';
         $current_company = isset($user['current_company']) ? $user['current_company'] : '';
 
-        file_put_contents('profile_section_get_debug.txt', date('c') . " USERID={$userid} ROW=" . json_encode($user) . PHP_EOL, FILE_APPEND);
-
         echo json_encode([
             'status' => 'success',
             'name' => $name,
@@ -62,8 +60,6 @@ try {
         echo json_encode(['status' => 'error', 'message' => 'User not found']);
     }
 } catch (PDOException $e) {
-    file_put_contents('error_log.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
-    file_put_contents('profile_section_get_debug.txt', date('c') . ' ERROR: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
     echo json_encode(['status' => 'error', 'message' => 'An error occurred.']);
 } finally {
     $conn = null;

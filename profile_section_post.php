@@ -73,15 +73,12 @@ try {
 
     $conn->commit();
 
-    file_put_contents('profile_section_post_debug.txt', date('c') . " USERID={$userid} FIELD={$field} VALUE=" . json_encode($value) . " AFFECTED={$affected}" . PHP_EOL, FILE_APPEND);
-
     echo json_encode(['status' => 'success', 'affected' => $affected]);
 } catch (PDOException $e) {
     if (isset($conn)) {
         $conn->rollBack();
     }
-    file_put_contents('error_log.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
-    file_put_contents('profile_section_post_debug.txt', date('c') . ' ERROR: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+
     echo json_encode(['status' => 'error', 'message' => 'An error occurred.']);
 } finally {
     $conn = null;
