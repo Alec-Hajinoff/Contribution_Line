@@ -119,3 +119,31 @@ export const profileSectionPost = async (field, value) => {
     throw new Error("An error occurred while saving profile data.");
   }
 };
+
+
+
+export const addContribution = async (contributionData) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/add_contribution.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify(contributionData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("addContribution error:", error);
+    throw new Error("An error occurred while adding the contribution.");
+  }
+};
