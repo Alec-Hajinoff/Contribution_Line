@@ -1,5 +1,52 @@
-.add-contribution .card-body { padding: 12px; }
-.add-contribution .card-title { margin-bottom: 8px; font-size: 1.05rem; }
-.add-contribution .form-label { font-weight: 600; }
-.add-contribution .form-text { font-size: 0.8rem; }
-.add-contribution .mb-2 { margin-bottom: 0.5rem; }
+.add-contribution .card-body {
+  padding: 12px;
+}
+.add-contribution .card-title {
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+}
+.add-contribution .form-label {
+  font-weight: 600;
+}
+.add-contribution .form-text {
+  font-size: 0.8rem;
+}
+
+.add-contribution .mb-2 {
+  margin-bottom: 0.5rem;
+}
+
+.add-contribution .toggle-button {
+  width: 100%;
+  text-align: left;
+  font-size: 1rem;
+  padding: 10px 12px;
+  margin-bottom: 12px;
+  border-radius: 4px;
+  transition: all 0.3s ease;
+}
+
+.add-contribution .toggle-button:hover {
+  background-color: #e7f1ff;
+  border-color: #0d6efd;
+}
+
+.add-contribution .toggle-button:active {
+  background-color: #e7f1ff;
+}
+
+.add-contribution .form-container {
+  animation: slideDown 0.3s ease-out;
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+  }
+  to {
+    opacity: 1;
+    max-height: 1000px;
+  }
+}

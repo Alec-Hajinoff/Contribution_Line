@@ -120,9 +120,9 @@ export const profileSectionPost = async (field, value) => {
   }
 };
 
+// addContribution() sends the contribution data to the database.
 
-
-export const addContribution = async (contributionData) => {
+export const addContribution = async (payload) => {
   try {
     const response = await fetch(
       "http://localhost:8001/Contribution_Line/add_contribution.php",
@@ -132,8 +132,8 @@ export const addContribution = async (contributionData) => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify(contributionData),
-      }
+        body: JSON.stringify(payload),
+      },
     );
 
     if (!response.ok) {
