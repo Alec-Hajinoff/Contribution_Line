@@ -1,10 +1,7 @@
 <?php
 require_once 'session_config.php';
 
-$allowed_origins = [
-    'http://localhost:3000'
-];
-
+$allowed_origins = ['http://localhost:3000'];
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 if (in_array($origin, $allowed_origins)) {
@@ -28,44 +25,20 @@ if (!isset($_SESSION['id'])) {
     exit;
 }
 
-$input = json_decode(file_get_contents('php://input'), true);
+$title = $_POST['title'] ?? null;
+$what_happened = $_POST['what_happened'] ?? null;
+$why_it_mattered = $_POST['why_it_mattered'] ?? null;
+$outcome_impact = $_POST['outcome_impact'] ?? null;
+$contribution_date = $_POST['contribution_date'] ?? null;
+$categories = $_POST['categories'] ?? [];
+$evidence_links_json = $_POST['evidence_links'] ?? '[]';
 
-if ($input === null) {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid JSON input']);
-    exit;
-}
-
-$title = $input['title'] ?? null;
-$what_happened = $input['what_happened'] ?? null;
-$why_it_mattered = $input['why_it_mattered'] ?? null;
-$outcome_impact = $input['outcome_impact'] ?? null;
-$contribution_date = $input['contribution_date'] ?? null;
-$categories = $input['categories'] ?? [];
-
-if (!$title || !$what_happened || !$why_it_mattered || !$outcome_impact) {
+if (!$title || !$what_happened || !$why_it_mattered || !$outcome_impact || !$contribution_date) {
     echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
     exit;
 }
 
-$title = trim($title);
-$what_happened = trim($what_happened);
-$why_it_mattered = trim($why_it_mattered);
-$outcome_impact = trim($outcome_impact);
-
-if (!$contribution_date || !preg_match('/^\d{4}-\d{2}-\d{2}$/', $contribution_date)) {
-    echo json_encode(['status' => 'error', 'message' => 'Invalid date format. Use YYYY-MM-DD']);
-    exit;
-}
-
-if (strtotime($contribution_date) > time()) {
-    echo json_encode(['status' => 'error', 'message' => 'Contribution date cannot be in the future']);
-    exit;
-}
-
-if (!is_array($categories)) {
-    $categories = [];
-}
-$categories_json = json_encode($categories);
+$categories_json = json_encode(is_array($categories) ? $categories : []);
 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
@@ -81,28 +54,66 @@ try {
         VALUES (:users_id, :title, :what_happened, :why_it_mattered, :outcome_impact, :contribution_date, :categories)
     ');
 
-    $stmt->bindParam(':users_id', $_SESSION['id'], PDO::PARAM_INT);
-    $stmt->bindParam(':title', $title, PDO::PARAM_STR);
-    $stmt->bindParam(':what_happened', $what_happened, PDO::PARAM_STR);
-    $stmt->bindParam(':why_it_mattered', $why_it_mattered, PDO::PARAM_STR);
-    $stmt->bindParam(':outcome_impact', $outcome_impact, PDO::PARAM_STR);
-    $stmt->bindParam(':contribution_date', $contribution_date, PDO::PARAM_STR);
-    $stmt->bindParam(':categories', $categories_json, PDO::PARAM_STR);
+    $stmt->execute([
+        ':users_id' => $_SESSION['id'],
+        ':title' => trim($title),
+        ':what_happened' => trim($what_happened),
+        ':why_it_mattered' => trim($why_it_mattered),
+        ':outcome_impact' => trim($outcome_impact),
+        ':contribution_date' => $contribution_date,
+        ':categories' => $categories_json
+    ]);
 
-    $stmt->execute();
+    $contribution_id = $pdo->lastInsertId();
+
+    $links = json_decode($evidence_links_json, true);
+    if (is_array($links)) {
+        $linkStmt = $pdo->prepare('
+            INSERT INTO evidence_links (contributions_id, url, label)
+            VALUES (:contributions_id, :url, :label)
+        ');
+        foreach ($links as $link) {
+            if (!empty($link['url'])) {
+                $linkStmt->execute([
+                    ':contributions_id' => $contribution_id,
+                    ':url' => trim($link['url']),
+                    ':label' => trim($link['label'] ?? '')
+                ]);
+            }
+        }
+    }
+
+    if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
+        $file_tmp = $_FILES['file']['tmp_name'];
+        $file_name = $_FILES['file']['name'];
+        $mime_type = $_FILES['file']['type'];
+        $file_data = file_get_contents($file_tmp);
+
+        $fileStmt = $pdo->prepare('
+            INSERT INTO files (contributions_id, file_data, file_name, mime_type)
+            VALUES (:contributions_id, :file_data, :file_name, :mime_type)
+        ');
+
+        $fileStmt->bindParam(':contributions_id', $contribution_id, PDO::PARAM_INT);
+        $fileStmt->bindParam(':file_data', $file_data, PDO::PARAM_LOB);
+        $fileStmt->bindParam(':file_name', $file_name, PDO::PARAM_STR);
+        $fileStmt->bindParam(':mime_type', $mime_type, PDO::PARAM_STR);
+        $fileStmt->execute();
+    }
 
     $pdo->commit();
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Contribution added successfully'
+        'message' => 'Contribution, links, and file saved successfully',
+        'id' => $contribution_id
     ]);
 } catch (PDOException $e) {
-    if (isset($pdo)) {
+    if (isset($pdo) && $pdo->inTransaction()) {
         $pdo->rollBack();
     }
-    file_put_contents('error_log.txt', $e->getMessage() . PHP_EOL, FILE_APPEND);
-    echo json_encode(['status' => 'error', 'message' => 'An error occurred. Please try again later.']);
+    error_log('Add Contribution Error: ' . $e->getMessage());
+    echo json_encode(['status' => 'error', 'message' => 'Database error occurred.']);
 } finally {
     $pdo = null;
 }
