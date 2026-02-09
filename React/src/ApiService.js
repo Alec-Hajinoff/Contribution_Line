@@ -145,3 +145,30 @@ export const addContribution = async (formData) => {
     throw new Error("An error occurred while adding the contribution.");
   }
 };
+
+// contributionsTimeline() fetches all contributions for the logged-in user to display on the timeline.
+
+export const contributionsTimeline = async () => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/contributions_timeline.php",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("contributionsTimeline error:", error);
+    throw new Error("An error occurred while fetching the timeline.");
+  }
+};

@@ -1,0 +1,49 @@
+.timeline-container {
+  padding-left: 20px;
+  border-left: 3px solid #dee2e6;
+  margin-left: 10px;
+}
+
+.timeline-card {
+  position: relative;
+  border-radius: 8px;
+  transition: transform 0.2s ease-in-out;
+}
+
+.timeline-card:hover {
+  transform: translateX(5px);
+  border-color: #007bff;
+}
+
+.timeline-card::before {
+  content: "";
+  position: absolute;
+  left: -28px;
+  top: 20px;
+  width: 14px;
+  height: 14px;
+  background-color: #007bff;
+  border-radius: 50%;
+  border: 3px solid #fff;
+  box-shadow: 0 0 0 2px #dee2e6;
+}
+
+.card-title {
+  margin-bottom: 0.5rem;
+}
+
+.badge {
+  font-weight: 500;
+}
+
+h6 {
+  margin-top: 1rem;
+  font-size: 0.95rem;
+  color: #495057;
+}
+
+.card-text {
+  font-size: 0.9rem;
+  line-height: 1.5;
+  white-space: pre-wrap;
+}

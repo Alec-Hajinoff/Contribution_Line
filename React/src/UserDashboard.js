@@ -3,6 +3,7 @@ import "./UserDashboard.css";
 import LogoutComponent from "./LogoutComponent";
 import AddContribution from "./AddContribution";
 import ProfileSection from "./ProfileSection";
+import ContributionsTimeline from "./ContributionsTimeline";
 
 function UserDashboard() {
   return (
@@ -18,7 +19,10 @@ function UserDashboard() {
           <AddContribution />
           <ProfileSection />
         </div>
-        <div className="col-md-8"></div>
+
+        <div className="col-md-8">
+          <ContributionsTimeline />
+        </div>
       </div>
     </div>
   );

@@ -1,0 +1,52 @@
+<?php
+
+require_once 'session_config.php';
+
+$allowed_origins = [
+    'http://localhost:3000'
+];
+
+$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+
+if (in_array($origin, $allowed_origins)) {
+    header("Access-Control-Allow-Origin: $origin");
+} else {
+    header('HTTP/1.1 403 Forbidden');
+    exit;
+}
+
+header('Access-Control-Allow-Credentials: true');
+header('Access-Control-Allow-Methods: GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
+header('Content-Type: application/json');
+
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    exit;
+}
+
+if (!isset($_SESSION['id'])) {
+    echo json_encode(['status' => 'error', 'message' => 'Unauthorized access']);
+    exit;
+}
+
+$user_id = $_SESSION['id'];
+
+try {
+    $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
+        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+        PDO::ATTR_EMULATE_PREPARES => false
+    ]);
+
+    $stmt = $pdo->prepare('SELECT * FROM contributions WHERE users_id = ? ORDER BY contribution_date DESC');
+    $stmt->execute([$user_id]);
+    $contributions = $stmt->fetchAll();
+
+    echo json_encode($contributions);
+} catch (PDOException $e) {
+    file_put_contents('error_log.txt', 'Timeline Error: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
+    header('HTTP/1.1 500 Internal Server Error');
+    echo json_encode(['status' => 'error', 'message' => 'An error occurred while fetching your timeline.']);
+} finally {
+    $pdo = null;
+}
