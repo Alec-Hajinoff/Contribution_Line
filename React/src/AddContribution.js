@@ -76,6 +76,10 @@ function AddContribution() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    if (form.categories.length === 0) {
+      alert("Please select at least one category.");
+      return;
+    }
     setStatus("saving");
 
     try {
