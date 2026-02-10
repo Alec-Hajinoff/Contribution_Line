@@ -11,7 +11,6 @@ const ContributionsTimeline = () => {
     const fetchTimeline = async () => {
       try {
         const data = await contributionsTimeline();
-
         setContributions(data);
       } catch (err) {
         setError(err.message);
@@ -22,6 +21,14 @@ const ContributionsTimeline = () => {
 
     fetchTimeline();
   }, []);
+
+  const handleDownload = (fileData, fileName, mimeType) => {
+    const linkSource = `data:${mimeType};base64,${fileData}`;
+    const downloadLink = document.createElement("a");
+    downloadLink.href = linkSource;
+    downloadLink.download = fileName;
+    downloadLink.click();
+  };
 
   if (loading)
     return <div className="text-center mt-5">Loading timeline...</div>;
@@ -73,6 +80,54 @@ const ContributionsTimeline = () => {
                   </h6>
                   <p className="card-text text-muted">{item.outcome_impact}</p>
                 </div>
+
+                {item.evidence_links && item.evidence_links.length > 0 && (
+                  <div className="mt-3">
+                    <h6>
+                      <strong>Evidence Links:</strong>
+                    </h6>
+                    <ul className="list-unstyled">
+                      {item.evidence_links.map((link) => (
+                        <li key={link.id}>
+                          <a
+                            href={link.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="text-decoration-none"
+                          >
+                            {link.label || link.url}
+                          </a>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+
+                {item.files && item.files.length > 0 && (
+                  <div className="mt-3">
+                    <h6>
+                      <strong>Attached Files:</strong>
+                    </h6>
+                    <ul className="list-unstyled">
+                      {item.files.map((file) => (
+                        <li key={file.id}>
+                          <button
+                            className="btn btn-link p-0 text-decoration-none"
+                            onClick={() =>
+                              handleDownload(
+                                file.file_data,
+                                file.file_name,
+                                file.mime_type,
+                              )
+                            }
+                          >
+                            {file.file_name}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
 
                 <div className="card-footer bg-transparent border-0 p-0 mt-3">
                   <small className="text-muted">

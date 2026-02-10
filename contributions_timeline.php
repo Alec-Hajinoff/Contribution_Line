@@ -42,6 +42,48 @@ try {
     $stmt->execute([$user_id]);
     $contributions = $stmt->fetchAll();
 
+    if (!empty($contributions)) {
+        $contribution_ids = array_column($contributions, 'id');
+        $in_query = implode(',', array_fill(0, count($contribution_ids), '?'));
+
+        $file_stmt = $pdo->prepare("SELECT * FROM files WHERE contributions_id IN ($in_query)");
+        $file_stmt->execute($contribution_ids);
+        $all_files = $file_stmt->fetchAll();
+
+        $grouped_files = [];
+        foreach ($all_files as $file) {
+            $contrib_id = $file['contributions_id'];
+            if (!isset($grouped_files[$contrib_id])) {
+                $grouped_files[$contrib_id] = [];
+            }
+
+            if (isset($file['file_data'])) {
+                $file['file_data'] = base64_encode($file['file_data']);
+            }
+
+            $grouped_files[$contrib_id][] = $file;
+        }
+
+        $link_stmt = $pdo->prepare("SELECT * FROM evidence_links WHERE contributions_id IN ($in_query)");
+        $link_stmt->execute($contribution_ids);
+        $all_links = $link_stmt->fetchAll();
+
+        $grouped_links = [];
+        foreach ($all_links as $link) {
+            $contrib_id = $link['contributions_id'];
+            if (!isset($grouped_links[$contrib_id])) {
+                $grouped_links[$contrib_id] = [];
+            }
+            $grouped_links[$contrib_id][] = $link;
+        }
+
+        foreach ($contributions as &$contribution) {
+            $id = $contribution['id'];
+            $contribution['files'] = $grouped_files[$id] ?? [];
+            $contribution['evidence_links'] = $grouped_links[$id] ?? [];
+        }
+    }
+
     echo json_encode($contributions);
 } catch (PDOException $e) {
     file_put_contents('error_log.txt', 'Timeline Error: ' . $e->getMessage() . PHP_EOL, FILE_APPEND);
