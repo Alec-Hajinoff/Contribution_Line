@@ -1,11 +1,18 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import { contributionsTimeline } from "./ApiService";
 import "./ContributionsTimeline.css";
+import TimelineFilter from "./TimelineFilter";
 
 const ContributionsTimeline = () => {
   const [contributions, setContributions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+
+  const [filters, setFilters] = useState({
+    startDate: "",
+    endDate: "",
+    selectedCategories: [],
+  });
 
   useEffect(() => {
     const fetchTimeline = async () => {
@@ -18,9 +25,45 @@ const ContributionsTimeline = () => {
         setLoading(false);
       }
     };
-
     fetchTimeline();
   }, []);
+
+  const handleClearFilters = () => {
+    setFilters({
+      startDate: "",
+      endDate: "",
+      selectedCategories: [],
+    });
+  };
+
+  const filteredContributions = useMemo(() => {
+    return contributions.filter((item) => {
+      const itemDate = new Date(item.contribution_date);
+
+      if (filters.startDate) {
+        const start = new Date(filters.startDate);
+        if (itemDate < start) return false;
+      }
+
+      if (filters.endDate) {
+        const end = new Date(filters.endDate);
+        if (itemDate > end) return false;
+      }
+
+      if (filters.selectedCategories.length > 0) {
+        const itemCategories = Array.isArray(item.categories)
+          ? item.categories
+          : JSON.parse(item.categories || "[]");
+
+        const hasMatch = itemCategories.some((cat) =>
+          filters.selectedCategories.includes(cat),
+        );
+        if (!hasMatch) return false;
+      }
+
+      return true;
+    });
+  }, [contributions, filters]);
 
   const handleDownload = (fileData, fileName, mimeType) => {
     const linkSource = `data:${mimeType};base64,${fileData}`;
@@ -37,11 +80,20 @@ const ContributionsTimeline = () => {
   return (
     <div className="timeline-container">
       <h2 className="mb-4">Your Contributions</h2>
-      {contributions.length === 0 ? (
-        <p className="text-muted">No contributions found. Start adding some!</p>
+
+      <TimelineFilter
+        filters={filters}
+        setFilters={setFilters}
+        onClear={handleClearFilters}
+      />
+
+      {filteredContributions.length === 0 ? (
+        <p className="text-muted">
+          No contributions match your current filters.
+        </p>
       ) : (
         <div className="timeline">
-          {contributions.map((item) => (
+          {filteredContributions.map((item) => (
             <div key={item.id} className="timeline-card card mb-4 shadow-sm">
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start">
