@@ -1,10 +1,13 @@
 import React, { useEffect, useState, useMemo } from "react";
+import { useNavigate } from "react-router-dom";
 import { contributionsTimeline } from "./ApiService";
 import "./ContributionsTimeline.css";
 import TimelineFilter from "./TimelineFilter";
+import SelectedTally from "./SelectedTally";
 
 const ContributionsTimeline = () => {
   const [contributions, setContributions] = useState([]);
+  const [selectedContributions, setSelectedContributions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
 
@@ -13,6 +16,8 @@ const ContributionsTimeline = () => {
     endDate: "",
     selectedCategories: [],
   });
+
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchTimeline = async () => {
@@ -65,12 +70,22 @@ const ContributionsTimeline = () => {
     });
   }, [contributions, filters]);
 
-  const handleDownload = (fileData, fileName, mimeType) => {
-    const linkSource = `data:${mimeType};base64,${fileData}`;
-    const downloadLink = document.createElement("a");
-    downloadLink.href = linkSource;
-    downloadLink.download = fileName;
-    downloadLink.click();
+  const handleAddToPresentation = (item) => {
+    setSelectedContributions((prev) => [...prev, item]);
+  };
+
+  const handleCreatePresentationView = async () => {
+    const response = await fetch("/api/presentation/create.php", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contribution_ids: selectedContributions.map((c) => c.id),
+      }),
+    });
+
+    const data = await response.json();
+
+    navigate(`/presentation/${data.presentation_id}`);
   };
 
   if (loading)
@@ -79,6 +94,13 @@ const ContributionsTimeline = () => {
 
   return (
     <div className="timeline-container">
+      {selectedContributions.length > 0 && (
+        <SelectedTally
+          count={selectedContributions.length}
+          onDisplay={handleCreatePresentationView}
+        />
+      )}
+
       <h2 className="mb-4">Your Contributions</h2>
 
       <TimelineFilter
@@ -131,60 +153,15 @@ const ContributionsTimeline = () => {
                     <strong>Outcome & Impact:</strong>
                   </h6>
                   <p className="card-text text-muted">{item.outcome_impact}</p>
-                </div>
-
-                {item.evidence_links && item.evidence_links.length > 0 && (
-                  <div className="mt-3">
-                    <h6>
-                      <strong>Evidence Links:</strong>
-                    </h6>
-                    <ul className="list-unstyled">
-                      {item.evidence_links.map((link) => (
-                        <li key={link.id}>
-                          <a
-                            href={link.url}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-decoration-none"
-                          >
-                            {link.label || link.url}
-                          </a>
-                        </li>
-                      ))}
-                    </ul>
+                  <div className="d-flex justify-content-between align-items-center mt-3">
+                    <div></div>
+                    <button
+                      className="btn btn-sm btn-outline-primary"
+                      onClick={() => handleAddToPresentation(item)}
+                    >
+                      Add to presentation view
+                    </button>
                   </div>
-                )}
-
-                {item.files && item.files.length > 0 && (
-                  <div className="mt-3">
-                    <h6>
-                      <strong>Attached Files:</strong>
-                    </h6>
-                    <ul className="list-unstyled">
-                      {item.files.map((file) => (
-                        <li key={file.id}>
-                          <button
-                            className="btn btn-link p-0 text-decoration-none"
-                            onClick={() =>
-                              handleDownload(
-                                file.file_data,
-                                file.file_name,
-                                file.mime_type,
-                              )
-                            }
-                          >
-                            {file.file_name}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                )}
-
-                <div className="card-footer bg-transparent border-0 p-0 mt-3">
-                  <small className="text-muted">
-                    Created on: {new Date(item.created_at).toLocaleString()}
-                  </small>
                 </div>
               </div>
             </div>
