@@ -4,6 +4,7 @@ import { contributionsTimeline } from "./ApiService";
 import "./ContributionsTimeline.css";
 import TimelineFilter from "./TimelineFilter";
 import SelectedTally from "./SelectedTally";
+import { presentationViewPost } from "./ApiService";
 
 const ContributionsTimeline = () => {
   const [contributions, setContributions] = useState([]);
@@ -75,17 +76,11 @@ const ContributionsTimeline = () => {
   };
 
   const handleCreatePresentationView = async () => {
-    const response = await fetch("/api/presentation/create.php", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contribution_ids: selectedContributions.map((c) => c.id),
-      }),
-    });
+    const data = await presentationViewPost(
+      selectedContributions.map((c) => c.id),
+    );
 
-    const data = await response.json();
-
-    navigate(`/presentation/${data.presentation_id}`);
+    navigate(`/PresentationView/${data.presentation_id}`);
   };
 
   if (loading)

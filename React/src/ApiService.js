@@ -172,3 +172,27 @@ export const contributionsTimeline = async () => {
     throw new Error("An error occurred while fetching the timeline.");
   }
 };
+
+// presentationViewPost() sends the presentation view to the database creating a new presentation view record.
+
+export const presentationViewPost = async (contributionIds) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/presentation_view_post.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ contribution_ids: contributionIds }),
+      },
+    );
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("presentationViewPost error:", error);
+    throw new Error("An error occurred while creating the presentation view.");
+  }
+};
