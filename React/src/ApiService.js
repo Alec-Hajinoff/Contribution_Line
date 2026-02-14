@@ -196,3 +196,29 @@ export const presentationViewPost = async (contributionIds) => {
     throw new Error("An error occurred while creating the presentation view.");
   }
 };
+
+// presentationViewGet() fetches a specific presentation record and its associated contributions by ID.
+
+export const presentationViewGet = async (id) => {
+  try {
+    const response = await fetch(
+      `http://localhost:8001/Contribution_Line/presentation_view_get.php?id=${id}`,
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("presentationViewGet error:", error);
+    throw new Error("An error occurred while fetching the presentation view.");
+  }
+};

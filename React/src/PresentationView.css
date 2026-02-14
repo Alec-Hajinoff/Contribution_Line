@@ -1,0 +1,54 @@
+/* PresentationView.css */
+
+/* We leverage the existing timeline styles for the cards */
+@import "./ContributionsTimeline.css";
+
+.presentation-container {
+  max-width: 900px;
+  margin: 40px auto;
+  padding: 0 20px;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.presentation-header {
+  border-bottom: 2px solid #007bff;
+  padding-bottom: 20px;
+  margin-bottom: 40px;
+}
+
+.presentation-title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #212529;
+  margin-bottom: 10px;
+}
+
+.presentation-metadata {
+  font-size: 1rem;
+  color: #6c757d;
+}
+
+/* Ensure the timeline-container looks good without the dashboard sidebar */
+.presentation-container .timeline-container {
+  border-left: 3px solid #007bff;
+  padding-left: 35px;
+}
+
+/* Optimization for when the manager wants to save as PDF or Print */
+@media print {
+  .presentation-container {
+    margin: 0;
+    width: 100%;
+    max-width: 100%;
+  }
+  
+  .timeline-card {
+    break-inside: avoid;
+    box-shadow: none !important;
+    border: 1px solid #dee2e6 !important;
+  }
+
+  .btn {
+    display: none !important; /* Hide any buttons if they existed */
+  }
+}

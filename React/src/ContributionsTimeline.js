@@ -80,7 +80,7 @@ const ContributionsTimeline = () => {
       selectedContributions.map((c) => c.id),
     );
 
-    navigate(`/PresentationView/${data.presentation_id}`);
+    navigate(`/PresentationView/${data.id}`);
   };
 
   if (loading)
