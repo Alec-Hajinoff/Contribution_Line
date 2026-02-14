@@ -27,6 +27,22 @@ const PresentationView = () => {
     if (id) fetchData();
   }, [id]);
 
+  const downloadFile = (base64Data, fileName, mimeType) => {
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: mimeType });
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  };
+
   if (loading)
     return <div className="text-center mt-5">Loading presentation...</div>;
   if (error) return <div className="alert alert-danger mt-5 m-4">{error}</div>;
@@ -38,9 +54,7 @@ const PresentationView = () => {
           {data.name || "Contribution Presentation"}
         </h1>
         <div className="presentation-metadata">
-          <span>
-            Prepared on: {new Date(data.created_at).toLocaleDateString()}
-          </span>
+          <span>Prepared on: {new Date().toLocaleDateString()}</span>
         </div>
       </header>
 
@@ -50,9 +64,16 @@ const PresentationView = () => {
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-start">
                 <h3 className="card-title h5 text-primary">{item.title}</h3>
-                <span className="badge bg-secondary">
-                  {new Date(item.contribution_date).toLocaleDateString()}
-                </span>
+                <div className="text-end">
+                  <span className="badge bg-secondary d-block mb-1">
+                    Event:{" "}
+                    {new Date(item.contribution_date).toLocaleDateString()}
+                  </span>
+
+                  <small className="text-muted" style={{ fontSize: "0.75rem" }}>
+                    Logged: {new Date(item.created_at).toLocaleDateString()}
+                  </small>
+                </div>
               </div>
 
               {item.categories && (
@@ -86,13 +107,13 @@ const PresentationView = () => {
               </div>
 
               {item.evidence_links && item.evidence_links.length > 0 && (
-                <div className="mt-3 pt-3 border-top">
-                  <h6 className="text-dark small uppercase">
-                    <strong>Evidence Links:</strong>
+                <div className="mt-3">
+                  <h6 className="text-dark small">
+                    <strong>Links:</strong>
                   </h6>
-                  <ul className="list-unstyled">
+                  <ul className="list-unstyled mb-0">
                     {item.evidence_links.map((link, idx) => (
-                      <li key={idx} className="mb-1">
+                      <li key={idx}>
                         <a
                           href={link.url}
                           target="_blank"
@@ -108,18 +129,28 @@ const PresentationView = () => {
               )}
 
               {item.files && item.files.length > 0 && (
-                <div className="mt-2">
-                  <h6 className="text-dark small uppercase">
-                    <strong>Attached Evidence:</strong>
+                <div className="mt-3">
+                  <h6 className="text-dark small">
+                    <strong>Attached Evidence (Click to download):</strong>
                   </h6>
                   <div className="d-flex flex-wrap">
                     {item.files.map((file, idx) => (
-                      <span
+                      <button
                         key={idx}
-                        className="badge border text-secondary me-2 mb-2 p-2"
+                        className="btn btn-link p-0 me-3 text-decoration-none small text-dark d-flex align-items-center"
+                        style={{ textAlign: "left" }}
+                        onClick={() =>
+                          downloadFile(
+                            file.file_data,
+                            file.file_name,
+                            file.mime_type,
+                          )
+                        }
                       >
-                        📄 {file.file_name}
-                      </span>
+                        <span className="badge border text-secondary p-2">
+                          📄 {file.file_name}
+                        </span>
+                      </button>
                     ))}
                   </div>
                 </div>

@@ -87,6 +87,22 @@ const ContributionsTimeline = () => {
     }
   };
 
+  const downloadFile = (base64Data, fileName, mimeType) => {
+    const byteCharacters = atob(base64Data);
+    const byteNumbers = new Array(byteCharacters.length);
+    for (let i = 0; i < byteCharacters.length; i++) {
+      byteNumbers[i] = byteCharacters.charCodeAt(i);
+    }
+    const byteArray = new Uint8Array(byteNumbers);
+    const blob = new Blob([byteArray], { type: mimeType });
+
+    const link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = fileName;
+    link.click();
+    window.URL.revokeObjectURL(link.href);
+  };
+
   if (loading) return <div>Loading...</div>;
   if (error) return <div className="alert alert-danger">{error}</div>;
 
@@ -114,9 +130,18 @@ const ContributionsTimeline = () => {
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start">
                   <h3 className="card-title h5 text-primary">{item.title}</h3>
-                  <span className="badge bg-secondary">
-                    {new Date(item.contribution_date).toLocaleDateString()}
-                  </span>
+                  <div className="text-end">
+                    <span className="badge bg-secondary d-block mb-1">
+                      Event:{" "}
+                      {new Date(item.contribution_date).toLocaleDateString()}
+                    </span>
+                    <small
+                      className="text-muted"
+                      style={{ fontSize: "0.75rem" }}
+                    >
+                      Logged: {new Date(item.created_at).toLocaleDateString()}
+                    </small>
+                  </div>
                 </div>
 
                 {item.categories && (
@@ -147,7 +172,55 @@ const ContributionsTimeline = () => {
                     <strong>Outcome & Impact:</strong>
                   </h6>
                   <p className="card-text text-muted">{item.outcome_impact}</p>
-                  <div className="d-flex justify-content-between align-items-center mt-3">
+
+                  {item.evidence_links && item.evidence_links.length > 0 && (
+                    <div className="mt-3">
+                      <h6 className="mb-1">
+                        <strong>Links:</strong>
+                      </h6>
+                      <ul className="list-unstyled mb-0">
+                        {item.evidence_links.map((link, idx) => (
+                          <li key={idx}>
+                            <a
+                              href={link.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              className="text-decoration-none small"
+                            >
+                              🔗 {link.label || link.url}
+                            </a>
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+
+                  {item.files && item.files.length > 0 && (
+                    <div className="mt-3">
+                      <h6 className="mb-1">
+                        <strong>Attachments:</strong>
+                      </h6>
+                      <div className="d-flex flex-wrap">
+                        {item.files.map((file, idx) => (
+                          <button
+                            key={idx}
+                            className="btn btn-link p-0 me-3 text-decoration-none small text-dark"
+                            onClick={() =>
+                              downloadFile(
+                                file.file_data,
+                                file.file_name,
+                                file.mime_type,
+                              )
+                            }
+                          >
+                            📄 {file.file_name}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
+                  <div className="d-flex justify-content-between align-items-center mt-4">
                     <div></div>
                     <button
                       className="btn btn-sm btn-outline-primary"
