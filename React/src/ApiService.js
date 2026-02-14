@@ -185,7 +185,8 @@ export const presentationViewPost = async (contributionIds) => {
           "Content-Type": "application/json",
         },
         credentials: "include",
-        body: JSON.stringify({ contribution_ids: contributionIds }),
+
+        body: JSON.stringify({ contributions_id: contributionIds }),
       },
     );
 
@@ -208,7 +209,7 @@ export const presentationViewGet = async (id) => {
         headers: {
           "Content-Type": "application/json",
         },
-      }
+      },
     );
 
     if (!response.ok) {

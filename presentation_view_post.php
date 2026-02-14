@@ -32,12 +32,12 @@ $userId = $_SESSION['id'];
 
 $input = json_decode(file_get_contents('php://input'), true);
 
-if (!isset($input['contribution_ids']) || !is_array($input['contribution_ids'])) {
+if (!isset($input['contributions_id']) || !is_array($input['contributions_id'])) {
     echo json_encode(['status' => 'error', 'message' => 'No contributions selected.']);
     exit;
 }
 
-$contributionIdsJson = json_encode($input['contribution_ids']);
+$contributionIdsJson = json_encode($input['contributions_id']);
 $presentationName = $input['name'] ?? null;
 
 try {
@@ -50,7 +50,7 @@ try {
     $pdo->beginTransaction();
 
     $stmt = $pdo->prepare('
-        INSERT INTO presentation_view (users_id, name, contribution_ids, created_at) 
+        INSERT INTO presentation_view (users_id, name, contributions_id, created_at) 
         VALUES (?, ?, ?, NOW())
     ');
 
