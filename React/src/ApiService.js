@@ -198,7 +198,7 @@ export const presentationViewPost = async (contributionIds) => {
   }
 };
 
-// presentationViewGet() fetches a specific presentation record and its associated contributions by ID.
+// presentationViewGet() fetches selected contributions to present them in the presentation view.
 
 export const presentationViewGet = async (id) => {
   try {
