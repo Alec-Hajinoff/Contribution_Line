@@ -120,7 +120,10 @@ const PresentationView = () => {
                           rel="noopener noreferrer"
                           className="text-decoration-none small"
                         >
-                          🔗 {link.label || link.url}
+                          <span role="img" aria-label="link">
+                            🔗
+                          </span>{" "}
+                          {link.label || link.url}
                         </a>
                       </li>
                     ))}
@@ -148,7 +151,10 @@ const PresentationView = () => {
                         }
                       >
                         <span className="badge border text-secondary p-2">
-                          📄 {file.file_name}
+                          <span role="img" aria-label="document">
+                            📄
+                          </span>{" "}
+                          {file.file_name}
                         </span>
                       </button>
                     ))}
