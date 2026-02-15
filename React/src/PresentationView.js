@@ -35,20 +35,20 @@ const PresentationView = () => {
         return;
       }
 
-      const byteCharacters = atob(base64Data);
+      const byteCharacters = atob(base64Data); // atob() decodes base64 to binary, but represented as a string.
       const byteNumbers = new Array(byteCharacters.length);
 
       for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i);
+        byteNumbers[i] = byteCharacters.charCodeAt(i); // charCodeAt() returns a character at a given location.
       }
 
-      const byteArray = new Uint8Array(byteNumbers);
-      const blob = new Blob([byteArray], {
-        type: mimeType || "application/octet-stream",
+      const byteArray = new Uint8Array(byteNumbers); // Uint8Array() converts to byte array to work with Blobs.
+      const blob = new Blob([byteArray], { // Blob() is a browser API to handle BLOB data.
+        type: mimeType || "application/octet-stream", // Here we tell the browser what type of file this is.
       });
 
-      const url = window.URL.createObjectURL(blob);
-      const link = document.createElement("a");
+      const url = window.URL.createObjectURL(blob); // Create a temporary URL.
+      const link = document.createElement("a"); // Create a download link.
       link.href = url;
       link.download = fileName;
 
