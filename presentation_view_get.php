@@ -69,9 +69,17 @@ try {
         $linkStmt->execute([$cId]);
         $contribution['evidence_links'] = $linkStmt->fetchAll();
 
-        $fileStmt = $pdo->prepare('SELECT id, file_name, mime_type FROM files WHERE contributions_id = ?');
+        $fileStmt = $pdo->prepare('SELECT id, file_name, mime_type, file_data FROM files WHERE contributions_id = ?');
         $fileStmt->execute([$cId]);
-        $contribution['files'] = $fileStmt->fetchAll();
+
+        $files = $fileStmt->fetchAll();
+
+        foreach ($files as &$file) {
+            if (isset($file['file_data'])) {
+                $file['file_data'] = base64_encode($file['file_data']);
+            }
+        }
+        $contribution['files'] = $files;
     }
 
     echo json_encode([
