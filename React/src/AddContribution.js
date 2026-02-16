@@ -13,7 +13,6 @@ const CATEGORY_OPTIONS = [
 ];
 
 function AddContribution() {
-  const [isOpen, setIsOpen] = useState(false);
   const [file, setFile] = useState(null);
   const [form, setForm] = useState({
     title: "",
@@ -23,6 +22,8 @@ function AddContribution() {
     categories: [],
     contribution_date: "",
     evidence_link: "",
+    current_role: "",
+    current_company: "",
   });
   const [status, setStatus] = useState(null);
 
@@ -62,6 +63,17 @@ function AddContribution() {
       alert("Please select at least one category.");
       return;
     }
+
+    if (!form.current_role.trim()) {
+      alert("Please enter your current role.");
+      return;
+    }
+
+    if (!form.current_company.trim()) {
+      alert("Please enter your current company.");
+      return;
+    }
+
     setStatus("saving");
 
     try {
@@ -71,6 +83,8 @@ function AddContribution() {
       formData.append("why_it_mattered", form.why_it_mattered);
       formData.append("outcome_impact", form.outcome_impact);
       formData.append("contribution_date", form.contribution_date);
+      formData.append("current_role", form.current_role);
+      formData.append("current_company", form.current_company);
 
       form.categories.forEach((cat) => formData.append("categories[]", cat));
 
@@ -93,146 +107,160 @@ function AddContribution() {
         categories: [],
         contribution_date: "",
         evidence_link: "",
+        current_role: "",
+        current_company: "",
       });
       setFile(null);
-
-      setTimeout(() => setIsOpen(false), 1500);
     } catch (err) {
       console.error(err);
       setStatus("error");
     }
   };
 
-  const toggleForm = () => setIsOpen(!isOpen);
-
   return (
     <div className="card add-contribution mb-3">
       <div className="card-body">
-        <button
-          type="button"
-          className="btn btn-outline-primary toggle-button"
-          onClick={toggleForm}
-        >
-          {isOpen ? "▼ Hide Form" : "▶ Add a contribution"}
-        </button>
+        <form onSubmit={handleSubmit} className="form-container">
+          <div className="mb-2">
+            <label className="form-label">Title</label>
+            <input
+              type="text"
+              name="title"
+              className="form-control"
+              value={form.title}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-        {isOpen && (
-          <form onSubmit={handleSubmit} className="form-container">
-            <div className="mb-2">
-              <label className="form-label">Title</label>
-              <input
-                type="text"
-                name="title"
-                className="form-control"
-                value={form.title}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="mb-2">
+            <label className="form-label">What happened?</label>
+            <textarea
+              name="what_happened"
+              className="form-control"
+              value={form.what_happened}
+              onChange={handleChange}
+              rows={3}
+              required
+            />
+          </div>
 
-            <div className="mb-2">
-              <label className="form-label">What happened?</label>
-              <textarea
-                name="what_happened"
-                className="form-control"
-                value={form.what_happened}
-                onChange={handleChange}
-                rows={3}
-                required
-              />
-            </div>
+          <div className="mb-2">
+            <label className="form-label">Why it mattered?</label>
+            <textarea
+              name="why_it_mattered"
+              className="form-control"
+              value={form.why_it_mattered}
+              onChange={handleChange}
+              rows={3}
+              required
+            />
+          </div>
 
-            <div className="mb-2">
-              <label className="form-label">Why it mattered?</label>
-              <textarea
-                name="why_it_mattered"
-                className="form-control"
-                value={form.why_it_mattered}
-                onChange={handleChange}
-                rows={3}
-                required
-              />
-            </div>
+          <div className="mb-2">
+            <label className="form-label">Outcome / impact</label>
+            <textarea
+              name="outcome_impact"
+              className="form-control"
+              value={form.outcome_impact}
+              onChange={handleChange}
+              rows={3}
+              required
+            />
+          </div>
 
-            <div className="mb-2">
-              <label className="form-label">Outcome / impact</label>
-              <textarea
-                name="outcome_impact"
-                className="form-control"
-                value={form.outcome_impact}
-                onChange={handleChange}
-                rows={3}
-                required
-              />
-            </div>
+          <div className="mb-2">
+            <label className="form-label">Category</label>
+            <select
+              name="categories"
+              multiple
+              className="form-select"
+              value={form.categories}
+              onChange={handleCategoriesChange}
+            >
+              {CATEGORY_OPTIONS.map((c) => (
+                <option key={c} value={c}>
+                  {c}
+                </option>
+              ))}
+            </select>
+          </div>
 
-            <div className="mb-2">
-              <label className="form-label">Category</label>
-              <select
-                name="categories"
-                multiple
-                className="form-select"
-                value={form.categories}
-                onChange={handleCategoriesChange}
-              >
-                {CATEGORY_OPTIONS.map((c) => (
-                  <option key={c} value={c}>
-                    {c}
-                  </option>
-                ))}
-              </select>
-            </div>
+          <div className="mb-3">
+            <label className="form-label">Evidence Link (URL)</label>
+            <input
+              type="url"
+              name="evidence_link"
+              placeholder="https://..."
+              className="form-control"
+              value={form.evidence_link}
+              onChange={handleChange}
+            />
+          </div>
 
-            <div className="mb-3">
-              <label className="form-label">Evidence Link (URL)</label>
-              <input
-                type="url"
-                name="evidence_link"
-                placeholder="https://..."
-                className="form-control"
-                value={form.evidence_link}
-                onChange={handleChange}
-              />
-            </div>
+          <div className="mb-3">
+            <label className="form-label">
+              Support File (PDF, JPG, PNG - Max 10MB)
+            </label>
+            <input
+              type="file"
+              className="form-control"
+              accept=".pdf,.jpg,.jpeg,.png"
+              onChange={handleFileChange}
+            />
+          </div>
 
-            <div className="mb-3">
-              <label className="form-label">
-                Support File (PDF, JPG, PNG - Max 10MB)
-              </label>
-              <input
-                type="file"
-                className="form-control"
-                accept=".pdf,.jpg,.jpeg,.png"
-                onChange={handleFileChange}
-              />
-            </div>
+          <div className="mb-3">
+            <label className="form-label">Contribution date</label>
+            <input
+              type="date"
+              name="contribution_date"
+              className="form-control"
+              value={form.contribution_date}
+              onChange={handleChange}
+              required
+            />
+          </div>
 
-            <div className="mb-3">
-              <label className="form-label">Contribution date</label>
-              <input
-                type="date"
-                name="contribution_date"
-                className="form-control"
-                value={form.contribution_date}
-                onChange={handleChange}
-                required
-              />
-            </div>
+          <div className="mb-3">
+            <label className="form-label">Current Role</label>
+            <input
+              type="text"
+              name="current_role"
+              className="form-control"
+              value={form.current_role}
+              onChange={handleChange}
+              placeholder="e.g., Senior Developer, Product Manager"
+              required
+            />
+          </div>
 
-            <div className="d-flex align-items-center">
-              <button type="submit" className="btn btn-primary me-2">
-                Save
-              </button>
-              {status === "saving" && <small>Saving...</small>}
-              {status === "success" && (
-                <small className="text-success"> Saved successfully.</small>
-              )}
-              {status === "error" && (
-                <small className="text-danger"> Error saving.</small>
-              )}
-            </div>
-          </form>
-        )}
+          <div className="mb-3">
+            <label className="form-label">Current Company</label>
+            <input
+              type="text"
+              name="current_company"
+              className="form-control"
+              value={form.current_company}
+              onChange={handleChange}
+              placeholder="e.g., Acme Corporation"
+              required
+            />
+          </div>
+
+          <div className="d-flex align-items-center">
+            <button type="submit" className="btn btn-primary me-2">
+              Save
+            </button>
+            {status === "saving" && <small>Saving...</small>}
+            {status === "success" && (
+              <small className="text-success"> Saved successfully.</small>
+            )}
+            {status === "error" && (
+              <small className="text-danger"> Error saving.</small>
+            )}
+          </div>
+        </form>
       </div>
     </div>
   );
