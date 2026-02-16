@@ -190,7 +190,7 @@ const ContributionsTimeline = () => {
                               <span role="img" aria-label="link">
                                 🔗
                               </span>{" "}
-                              {link.label || link.url}
+                              {link.url}
                             </a>
                           </li>
                         ))}

@@ -43,7 +43,8 @@ const PresentationView = () => {
       }
 
       const byteArray = new Uint8Array(byteNumbers); // Uint8Array() converts to byte array to work with Blobs.
-      const blob = new Blob([byteArray], { // Blob() is a browser API to handle BLOB data.
+      const blob = new Blob([byteArray], {
+        // Blob() is a browser API to handle BLOB data.
         type: mimeType || "application/octet-stream", // Here we tell the browser what type of file this is.
       });
 
@@ -145,7 +146,7 @@ const PresentationView = () => {
                           <span role="img" aria-label="link">
                             🔗
                           </span>{" "}
-                          {link.label || link.url}
+                          {link.url}
                         </a>
                       </li>
                     ))}

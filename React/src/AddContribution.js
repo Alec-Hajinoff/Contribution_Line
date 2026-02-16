@@ -22,7 +22,7 @@ function AddContribution() {
     outcome_impact: "",
     categories: [],
     contribution_date: "",
-    evidence_links: [{ url: "", label: "" }],
+    evidence_link: "",
   });
   const [status, setStatus] = useState(null);
 
@@ -56,24 +56,6 @@ function AddContribution() {
     }
   };
 
-  const handleLinkChange = (index, field, value) => {
-    const updatedLinks = [...form.evidence_links];
-    updatedLinks[index][field] = value;
-    setForm({ ...form, evidence_links: updatedLinks });
-  };
-
-  const addLinkField = () => {
-    setForm({
-      ...form,
-      evidence_links: [...form.evidence_links, { url: "", label: "" }],
-    });
-  };
-
-  const removeLinkField = (index) => {
-    const updatedLinks = form.evidence_links.filter((_, i) => i !== index);
-    setForm({ ...form, evidence_links: updatedLinks });
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.categories.length === 0) {
@@ -92,7 +74,9 @@ function AddContribution() {
 
       form.categories.forEach((cat) => formData.append("categories[]", cat));
 
-      formData.append("evidence_links", JSON.stringify(form.evidence_links));
+      if (form.evidence_link) {
+        formData.append("evidence_link", form.evidence_link);
+      }
 
       if (file) {
         formData.append("file", file);
@@ -108,7 +92,7 @@ function AddContribution() {
         outcome_impact: "",
         categories: [],
         contribution_date: "",
-        evidence_links: [{ url: "", label: "" }],
+        evidence_link: "",
       });
       setFile(null);
 
@@ -200,45 +184,15 @@ function AddContribution() {
             </div>
 
             <div className="mb-3">
-              <label className="form-label">Evidence Links</label>
-              {form.evidence_links.map((link, index) => (
-                <div key={index} className="input-group mb-2">
-                  <input
-                    type="url"
-                    placeholder="URL (https://...)"
-                    className="form-control"
-                    value={link.url}
-                    onChange={(e) =>
-                      handleLinkChange(index, "url", e.target.value)
-                    }
-                  />
-                  <input
-                    type="text"
-                    placeholder="Label (optional)"
-                    className="form-control"
-                    value={link.label}
-                    onChange={(e) =>
-                      handleLinkChange(index, "label", e.target.value)
-                    }
-                  />
-                  {form.evidence_links.length > 1 && (
-                    <button
-                      type="button"
-                      className="btn btn-outline-danger"
-                      onClick={() => removeLinkField(index)}
-                    >
-                      ×
-                    </button>
-                  )}
-                </div>
-              ))}
-              <button
-                type="button"
-                className="btn btn-sm btn-outline-secondary"
-                onClick={addLinkField}
-              >
-                + Add another link
-              </button>
+              <label className="form-label">Evidence Link (URL)</label>
+              <input
+                type="url"
+                name="evidence_link"
+                placeholder="https://..."
+                className="form-control"
+                value={form.evidence_link}
+                onChange={handleChange}
+              />
             </div>
 
             <div className="mb-3">

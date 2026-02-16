@@ -31,7 +31,7 @@ $why_it_mattered = $_POST['why_it_mattered'] ?? null;
 $outcome_impact = $_POST['outcome_impact'] ?? null;
 $contribution_date = $_POST['contribution_date'] ?? null;
 $categories = $_POST['categories'] ?? [];
-$evidence_links_json = $_POST['evidence_links'] ?? '[]';
+$evidence_link = $_POST['evidence_link'] ?? '';
 
 if (!$title || !$what_happened || !$why_it_mattered || !$outcome_impact || !$contribution_date) {
     echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
@@ -66,21 +66,16 @@ try {
 
     $contribution_id = $pdo->lastInsertId();
 
-    $links = json_decode($evidence_links_json, true);
-    if (is_array($links)) {
+    if (!empty($evidence_link)) {
         $linkStmt = $pdo->prepare('
-            INSERT INTO evidence_links (contributions_id, url, label)
-            VALUES (:contributions_id, :url, :label)
+            INSERT INTO evidence_links (contributions_id, url)
+            VALUES (:contributions_id, :url)
         ');
-        foreach ($links as $link) {
-            if (!empty($link['url'])) {
-                $linkStmt->execute([
-                    ':contributions_id' => $contribution_id,
-                    ':url' => trim($link['url']),
-                    ':label' => trim($link['label'] ?? '')
-                ]);
-            }
-        }
+
+        $linkStmt->execute([
+            ':contributions_id' => $contribution_id,
+            ':url' => trim($evidence_link)
+        ]);
     }
 
     if (isset($_FILES['file']) && $_FILES['file']['error'] === UPLOAD_ERR_OK) {
@@ -105,7 +100,7 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'message' => 'Contribution, links, and file saved successfully',
+        'message' => 'Contribution and file saved successfully',
         'id' => $contribution_id
     ]);
 } catch (PDOException $e) {

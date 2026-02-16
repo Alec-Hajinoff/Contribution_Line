@@ -65,7 +65,7 @@ try {
     foreach ($contributions as &$contribution) {
         $cId = $contribution['id'];
 
-        $linkStmt = $pdo->prepare('SELECT url, label FROM evidence_links WHERE contributions_id = ?');
+        $linkStmt = $pdo->prepare('SELECT url FROM evidence_links WHERE contributions_id = ?');
         $linkStmt->execute([$cId]);
         $contribution['evidence_links'] = $linkStmt->fetchAll();
 
