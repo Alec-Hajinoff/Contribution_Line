@@ -35,21 +35,20 @@ const PresentationView = () => {
         return;
       }
 
-      const byteCharacters = atob(base64Data); // atob() decodes base64 to binary, but represented as a string.
+      const byteCharacters = atob(base64Data);
       const byteNumbers = new Array(byteCharacters.length);
 
       for (let i = 0; i < byteCharacters.length; i++) {
-        byteNumbers[i] = byteCharacters.charCodeAt(i); // charCodeAt() returns a character at a given location.
+        byteNumbers[i] = byteCharacters.charCodeAt(i);
       }
 
-      const byteArray = new Uint8Array(byteNumbers); // Uint8Array() converts to byte array to work with Blobs.
+      const byteArray = new Uint8Array(byteNumbers);
       const blob = new Blob([byteArray], {
-        // Blob() is a browser API to handle BLOB data.
-        type: mimeType || "application/octet-stream", // Here we tell the browser what type of file this is.
+        type: mimeType || "application/octet-stream",
       });
 
-      const url = window.URL.createObjectURL(blob); // Create a temporary URL.
-      const link = document.createElement("a"); // Create a download link.
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
       link.href = url;
       link.download = fileName;
 
@@ -184,6 +183,21 @@ const PresentationView = () => {
                   </div>
                 </div>
               )}
+
+              <div className="mt-3 pt-2 border-top">
+                <div className="d-flex gap-3 small text-muted">
+                  {item.current_role && (
+                    <span>
+                      <strong>Role:</strong> {item.current_role}
+                    </span>
+                  )}
+                  {item.current_company && (
+                    <span>
+                      <strong>Company:</strong> {item.current_company}
+                    </span>
+                  )}
+                </div>
+              </div>
             </div>
           </div>
         ))}

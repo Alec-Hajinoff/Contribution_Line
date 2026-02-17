@@ -53,7 +53,18 @@ try {
     }
 
     $placeholders = implode(',', array_fill(0, count($ids), '?'));
-    $sql = "SELECT id, title, what_happened, why_it_mattered, outcome_impact, contribution_date, categories, created_at 
+
+    $sql = "SELECT 
+                id, 
+                title, 
+                what_happened, 
+                why_it_mattered, 
+                outcome_impact, 
+                contribution_date, 
+                categories, 
+                created_at,
+                `current_role`,
+                `current_company`
             FROM contributions 
             WHERE id IN ($placeholders) 
             ORDER BY contribution_date DESC";
