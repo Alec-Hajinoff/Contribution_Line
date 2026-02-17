@@ -226,6 +226,21 @@ const ContributionsTimeline = () => {
                     </div>
                   )}
 
+                  <div className="mt-3 pt-2 border-top">
+                    <div className="d-flex gap-3 small text-muted">
+                      {item.current_role && (
+                        <span>
+                          <strong>Role:</strong> {item.current_role}
+                        </span>
+                      )}
+                      {item.current_company && (
+                        <span>
+                          <strong>Company:</strong> {item.current_company}
+                        </span>
+                      )}
+                    </div>
+                  </div>
+
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div></div>
                     <button

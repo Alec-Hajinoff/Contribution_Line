@@ -38,7 +38,23 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false
     ]);
 
-    $stmt = $pdo->prepare('SELECT * FROM contributions WHERE users_id = ? ORDER BY contribution_date DESC');
+    $stmt = $pdo->prepare('
+        SELECT 
+            id, 
+            users_id, 
+            title, 
+            what_happened, 
+            why_it_mattered, 
+            outcome_impact, 
+            contribution_date, 
+            categories, 
+            created_at,
+            `current_role`,
+            `current_company`
+        FROM contributions 
+        WHERE users_id = ? 
+        ORDER BY contribution_date DESC
+    ');
     $stmt->execute([$user_id]);
     $contributions = $stmt->fetchAll();
 
