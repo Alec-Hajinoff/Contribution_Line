@@ -32,6 +32,8 @@ $outcome_impact = $_POST['outcome_impact'] ?? null;
 $contribution_date = $_POST['contribution_date'] ?? null;
 $categories = $_POST['categories'] ?? [];
 $evidence_link = $_POST['evidence_link'] ?? '';
+$current_role = $_POST['current_role'] ?? null;
+$current_company = $_POST['current_company'] ?? null;
 
 if (!$title || !$what_happened || !$why_it_mattered || !$outcome_impact || !$contribution_date) {
     echo json_encode(['status' => 'error', 'message' => 'Missing required fields']);
@@ -50,8 +52,27 @@ try {
     $pdo->beginTransaction();
 
     $stmt = $pdo->prepare('
-        INSERT INTO contributions (users_id, title, what_happened, why_it_mattered, outcome_impact, contribution_date, categories)
-        VALUES (:users_id, :title, :what_happened, :why_it_mattered, :outcome_impact, :contribution_date, :categories)
+        INSERT INTO contributions (
+            users_id, 
+            title, 
+            what_happened, 
+            why_it_mattered, 
+            outcome_impact, 
+            contribution_date, 
+            categories,
+            `current_role`,
+            `current_company`
+        ) VALUES (
+            :users_id, 
+            :title, 
+            :what_happened, 
+            :why_it_mattered, 
+            :outcome_impact, 
+            :contribution_date, 
+            :categories,
+            :current_role,
+            :current_company
+        )
     ');
 
     $stmt->execute([
@@ -61,7 +82,9 @@ try {
         ':why_it_mattered' => trim($why_it_mattered),
         ':outcome_impact' => trim($outcome_impact),
         ':contribution_date' => $contribution_date,
-        ':categories' => $categories_json
+        ':categories' => $categories_json,
+        ':current_role' => !empty($current_role) ? trim($current_role) : null,
+        ':current_company' => !empty($current_company) ? trim($current_company) : null
     ]);
 
     $contribution_id = $pdo->lastInsertId();
