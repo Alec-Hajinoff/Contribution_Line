@@ -13,7 +13,6 @@ export default function AppRoutes() {
       <Route path="/RegisteredPage" element={<RegisteredPage />} />
       <Route path="/UserDashboard" element={<UserDashboard />} />
       <Route path="/LogoutComponent" element={<LogoutComponent />} />
-
       <Route path="/PresentationView/:id" element={<PresentationView />} />
     </Routes>
   );

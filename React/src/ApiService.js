@@ -63,63 +63,6 @@ export const logoutUser = async () => {
   }
 };
 
-// profileSectionGet() fetches data on component mount to display user profile data.
-
-export const profileSectionGet = async () => {
-  try {
-    const response = await fetch(
-      "http://localhost:8001/Contribution_Line/profile_section_get.php",
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    return responseData;
-  } catch (error) {
-    console.error("profileSectionGet error:", error);
-    throw new Error("An error occurred while fetching profile data.");
-  }
-};
-
-// profileSectionPost() sends to the database profile data saved by the user.
-
-export const profileSectionPost = async (field, value) => {
-  try {
-    const payload = { field, value };
-
-    const response = await fetch(
-      "http://localhost:8001/Contribution_Line/profile_section_post.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify(payload),
-      },
-    );
-
-    if (!response.ok) {
-      throw new Error(`HTTP error! status: ${response.status}`);
-    }
-
-    const responseData = await response.json();
-    return responseData;
-  } catch (error) {
-    console.error("profileSectionPost error:", error);
-    throw new Error("An error occurred while saving profile data.");
-  }
-};
-
 // addContribution() sends the contribution data to the database.
 
 export const addContribution = async (formData) => {
