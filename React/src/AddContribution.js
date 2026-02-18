@@ -12,8 +12,15 @@ const CATEGORY_OPTIONS = [
   "Mentoring / Knowledge Sharing",
 ];
 
-function AddContribution() {
+/**
+ * AddContribution - Form component for adding new contributions
+ * @param {Object} props - Component props
+ * @param {Function} props.onContributionAdded - Callback function called after successful submission
+ *                                               Notifies parent to refresh the timeline
+ */
+function AddContribution({ onContributionAdded }) {
   const [file, setFile] = useState(null);
+
   const [form, setForm] = useState({
     title: "",
     what_happened: "",
@@ -25,7 +32,9 @@ function AddContribution() {
     current_role: "",
     current_company: "",
   });
+
   const [status, setStatus] = useState(null);
+
   const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
@@ -74,6 +83,7 @@ function AddContribution() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     if (form.categories.length === 0) {
       alert("Please select at least one category.");
       return;
@@ -112,6 +122,7 @@ function AddContribution() {
       }
 
       await addContribution(formData);
+
       setStatus("success");
 
       setForm({
@@ -132,8 +143,15 @@ function AddContribution() {
       }
 
       clearSuccessMessage();
+
+      // CRITICAL: Notify parent component (UserDashboard) that a new contribution was added
+      // This triggers the timeline refresh so the new contribution appears immediately
+      if (onContributionAdded) {
+        onContributionAdded();
+      }
     } catch (err) {
       console.error(err);
+
       setStatus("error");
     }
   };
@@ -214,6 +232,7 @@ function AddContribution() {
                 </div>
               ))}
             </div>
+
             {form.categories.length === 0 && (
               <small className="text-muted">Select at least one category</small>
             )}
