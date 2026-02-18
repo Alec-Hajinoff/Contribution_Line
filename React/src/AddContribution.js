@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import "./AddContribution.css";
 import { addContribution } from "./ApiService";
 
@@ -26,6 +26,7 @@ function AddContribution() {
     current_company: "",
   });
   const [status, setStatus] = useState(null);
+  const fileInputRef = useRef(null);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -63,6 +64,12 @@ function AddContribution() {
       }
       setFile(selectedFile);
     }
+  };
+
+  const clearSuccessMessage = () => {
+    setTimeout(() => {
+      setStatus(null);
+    }, 2000);
   };
 
   const handleSubmit = async (e) => {
@@ -118,7 +125,13 @@ function AddContribution() {
         current_role: "",
         current_company: "",
       });
+
       setFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
+
+      clearSuccessMessage();
     } catch (err) {
       console.error(err);
       setStatus("error");
@@ -224,6 +237,7 @@ function AddContribution() {
             </label>
             <input
               type="file"
+              ref={fileInputRef}
               className="form-control"
               accept=".pdf,.jpg,.jpeg,.png"
               onChange={handleFileChange}
