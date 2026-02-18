@@ -32,10 +32,18 @@ function AddContribution() {
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleCategoriesChange = (e) => {
-    const options = Array.from(e.target.options);
-    const selected = options.filter((o) => o.selected).map((o) => o.value);
-    setForm((prev) => ({ ...prev, categories: selected }));
+  const handleCategoryCheckboxChange = (e) => {
+    const { value, checked } = e.target;
+    setForm((prev) => {
+      if (checked) {
+        return { ...prev, categories: [...prev.categories, value] };
+      } else {
+        return {
+          ...prev,
+          categories: prev.categories.filter((cat) => cat !== value),
+        };
+      }
+    });
   };
 
   const handleFileChange = (e) => {
@@ -169,21 +177,33 @@ function AddContribution() {
             />
           </div>
 
-          <div className="mb-2">
-            <label className="form-label">Category</label>
-            <select
-              name="categories"
-              multiple
-              className="form-select"
-              value={form.categories}
-              onChange={handleCategoriesChange}
-            >
-              {CATEGORY_OPTIONS.map((c) => (
-                <option key={c} value={c}>
-                  {c}
-                </option>
+          <div className="mb-3">
+            <label className="form-label d-block">
+              Categories (select all that apply)
+            </label>
+            <div className="mt-2">
+              {CATEGORY_OPTIONS.map((category) => (
+                <div key={category} className="form-check mb-2">
+                  <input
+                    type="checkbox"
+                    className="form-check-input"
+                    id={`category-${category.replace(/\s+/g, "-")}`}
+                    value={category}
+                    checked={form.categories.includes(category)}
+                    onChange={handleCategoryCheckboxChange}
+                  />
+                  <label
+                    className="form-check-label"
+                    htmlFor={`category-${category.replace(/\s+/g, "-")}`}
+                  >
+                    {category}
+                  </label>
+                </div>
               ))}
-            </select>
+            </div>
+            {form.categories.length === 0 && (
+              <small className="text-muted">Select at least one category</small>
+            )}
           </div>
 
           <div className="mb-3">
