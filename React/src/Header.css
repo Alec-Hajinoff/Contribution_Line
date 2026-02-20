@@ -17,6 +17,14 @@ body {
 }
 
 #logo {
-width: auto;
-height: 361;
+  width: auto;
+  height: 361;
+}
+
+.logo-container {
+  display: inline-block;
+}
+
+.logo-container a {
+  display: inline-block;
 }
