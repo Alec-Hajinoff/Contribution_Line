@@ -144,8 +144,6 @@ function AddContribution({ onContributionAdded }) {
 
       clearSuccessMessage();
 
-      // CRITICAL: Notify parent component (UserDashboard) that a new contribution was added
-      // This triggers the timeline refresh so the new contribution appears immediately
       if (onContributionAdded) {
         onContributionAdded();
       }
