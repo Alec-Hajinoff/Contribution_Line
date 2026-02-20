@@ -77,6 +77,7 @@ const ContributionsTimeline = () => {
       const data = await presentationViewPost(ids);
 
       if (data.status === "success") {
+        setSelectedContributions([]);
         const url = `/PresentationView/${data.id}`;
         window.open(url, "_blank", "noopener,noreferrer");
       } else {
