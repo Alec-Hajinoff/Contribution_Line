@@ -1,21 +1,135 @@
-input:valid {
-  background-color: ivory;
-  border: none;
-  outline: 2px solid deepskyblue;
-  border-radius: 5px;
-  accent-color: gold;
+.main-container {
+  padding: 20px 0;
 }
 
-body {
-  font-family: Arial, Helvetica, sans-serif;
+.intro-section {
+  margin-bottom: 40px;
+  padding: 20px;
+  background: linear-gradient(
+    135deg,
+    rgba(27, 62, 115, 0.05) 0%,
+    rgba(255, 140, 66, 0.05) 100%
+  );
+  border-left: 4px solid #1b3e73;
+  border-radius: 8px;
+}
+
+.intro-title {
+  color: #1b3e73;
+  font-size: 28px;
+  font-weight: 600;
+  margin-bottom: 15px;
+  letter-spacing: 0.5px;
+}
+
+.intro-text {
+  color: #333;
+  font-size: 16px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.value-points-section {
+  margin-top: 30px;
+}
+
+.section-title {
+  color: #1b3e73;
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 30px;
+  text-align: center;
+  letter-spacing: 0.3px;
+}
+
+.value-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 25px 20px;
+  text-align: center;
+  height: 100%;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.value-card:hover {
+  border-color: #ff8c42;
+  box-shadow: 0 8px 16px rgba(27, 62, 115, 0.15);
+  transform: translateY(-4px);
+}
+
+.card-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  display: inline-block;
+  line-height: 1;
+}
+
+.card-title {
+  color: #1b3e73;
   font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+  margin-top: 0;
 }
 
-.footer {
-  background-color: rgb(236, 230, 230);
-  border-radius: 7px;
+.value-card:hover .card-title {
+  color: #ff8c42;
 }
 
-#logo {
-  height: 150px;
+.card-description {
+  color: #555;
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 0;
+}
+
+@media (max-width: 768px) {
+  .intro-section {
+    padding: 15px;
+  }
+
+  .intro-title {
+    font-size: 24px;
+  }
+
+  .section-title {
+    font-size: 20px;
+    margin-bottom: 20px;
+  }
+
+  .value-card {
+    padding: 20px 15px;
+  }
+
+  .card-icon {
+    font-size: 40px;
+  }
+
+  .card-title {
+    font-size: 16px;
+  }
+
+  .card-description {
+    font-size: 13px;
+  }
+}
+
+@media (max-width: 576px) {
+  .intro-title {
+    font-size: 20px;
+  }
+
+  .intro-text {
+    font-size: 15px;
+  }
+
+  .section-title {
+    font-size: 18px;
+  }
+
+  .card-icon {
+    font-size: 36px;
+  }
 }

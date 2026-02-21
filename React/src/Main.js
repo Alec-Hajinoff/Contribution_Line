@@ -2,14 +2,70 @@ import React from "react";
 import "./Main.css";
 
 function Main() {
+  const valuePoints = [
+    {
+      id: 1,
+      icon: "📋",
+      title: "Private Record",
+      description:
+        "Capture contributions in a secure, private system of record that you own and control.",
+    },
+    {
+      id: 2,
+      icon: "⏱️",
+      title: "Capture As It Happens",
+      description:
+        "Log meaningful contributions at the moment the work occurs, while context is fresh.",
+    },
+    {
+      id: 3,
+      icon: "🎯",
+      title: "Flexible Views",
+      description:
+        "Assemble custom views for different purposes—promotions, reviews, pay negotiations—without duplicating work.",
+    },
+    {
+      id: 4,
+      icon: "📊",
+      title: "Evidence-Based",
+      description:
+        "Ground conversations in factual, well-organized evidence rather than ad-hoc memory or recent activity.",
+    },
+    {
+      id: 5,
+      icon: "🚀",
+      title: "Portable & Independent",
+      description:
+        "Your contributions belong to you. Records are portable and persist independently of any employer.",
+    },
+  ];
+
   return (
-    <div>
-      <p>
-        Contribution Line is a web application that helps individual
-        professionals capture their real work contributions as they happen, so
-        they can evidence their value during performance reviews, promotion
-        discussions, and pay negotiations.
-      </p>
+    <div className="main-container">
+      <div className="intro-section">
+        <h2 className="intro-title">Contribution Line</h2>
+        <p className="intro-text">
+          A web application that helps individual professionals capture their
+          real work contributions as they happen, so they can evidence their
+          value during performance reviews, promotion discussions, and pay
+          negotiations.
+        </p>
+      </div>
+
+      <div className="value-points-section">
+        <h3 className="section-title">Why Contribution Line?</h3>
+        <div className="row">
+          {valuePoints.map((point) => (
+            <div key={point.id} className="col-12 col-md-6 col-lg-4 mb-4">
+              <div className="value-card">
+                <div className="card-icon">{point.icon}</div>
+                <h4 className="card-title">{point.title}</h4>
+                <p className="card-description">{point.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   );
 }
