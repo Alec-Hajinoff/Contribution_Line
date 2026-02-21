@@ -17,8 +17,6 @@ function UserDashboard() {
         <LogoutComponent />
       </div>
 
-      <h1>Welcome to your dashboard</h1>
-
       <div className="row mt-4">
         <div className="col-md-4">
           <AddContribution onContributionAdded={handleContributionAdded} />

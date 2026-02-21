@@ -159,7 +159,7 @@ function AddContribution({ onContributionAdded }) {
       <div className="card-body">
         <form onSubmit={handleSubmit} className="form-container">
           <div className="mb-2">
-            <label className="form-label">Title</label>
+            <label className="form-label">Contribution title</label>
             <input
               type="text"
               name="title"
@@ -208,7 +208,7 @@ function AddContribution({ onContributionAdded }) {
 
           <div className="mb-3">
             <label className="form-label d-block">
-              Categories (select all that apply)
+              Categories
             </label>
             <div className="mt-2">
               {CATEGORY_OPTIONS.map((category) => (
@@ -250,7 +250,7 @@ function AddContribution({ onContributionAdded }) {
 
           <div className="mb-3">
             <label className="form-label">
-              Support File (PDF, JPG, PNG - Max 10MB)
+              Supporting file (PDF, JPG, PNG - Max 10MB)
             </label>
             <input
               type="file"
@@ -294,7 +294,7 @@ function AddContribution({ onContributionAdded }) {
               className="form-control"
               value={form.current_company}
               onChange={handleChange}
-              placeholder="e.g., Acme Corporation"
+              placeholder="e.g., HSBC Bank"
               required
             />
           </div>

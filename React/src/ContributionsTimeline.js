@@ -123,7 +123,7 @@ const ContributionsTimeline = () => {
       )}
 
       {filteredContributions.length === 0 ? (
-        <p>No contributions match your filters.</p>
+        <p>Start building your record - add your first contribution.</p>
       ) : (
         <div className="timeline-container">
           {filteredContributions.map((item) => (
