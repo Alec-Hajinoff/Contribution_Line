@@ -38,6 +38,13 @@ function Main() {
       description:
         "Your contributions belong to you. Records are portable and persist independently of any employer.",
     },
+    {
+      id: 6,
+      icon: "✅",
+      title: "Always Prepared",
+      description:
+        "Maintain an up-to-date record so you're never reconstructing your value at the last minute.",
+    },
   ];
 
   return (
@@ -50,7 +57,6 @@ function Main() {
       </div>
 
       <div className="value-points-section">
-        <h3 className="section-title">Why Contribution Line?</h3>
         <div className="row">
           {valuePoints.map((point) => (
             <div key={point.id} className="col-12 col-md-6 col-lg-4 mb-4">
