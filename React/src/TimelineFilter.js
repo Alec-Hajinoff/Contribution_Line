@@ -10,10 +10,10 @@ const TimelineFilter = ({ filters, setFilters, onClear }) => {
   return (
     <div className="card mb-4 shadow-sm border-primary">
       <div className="card-body">
-        <h5 className="card-title h6 mb-3">Filter Contributions</h5>
+        <h5 className="card-title h6 mb-3">Filter contributions</h5>
         <div className="row g-3">
           <div className="col-md-3">
-            <label className="form-label small">Start Date</label>
+            <label className="form-label small">Start date</label>
             <input
               type="date"
               name="startDate"
@@ -23,7 +23,7 @@ const TimelineFilter = ({ filters, setFilters, onClear }) => {
             />
           </div>
           <div className="col-md-3">
-            <label className="form-label small">End Date</label>
+            <label className="form-label small">End date</label>
             <input
               type="date"
               name="endDate"

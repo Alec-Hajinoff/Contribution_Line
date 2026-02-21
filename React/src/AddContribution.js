@@ -237,7 +237,7 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Evidence Link (URL)</label>
+            <label className="form-label">Evidence link (URL)</label>
             <input
               type="url"
               name="evidence_link"
@@ -274,7 +274,7 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Current Role</label>
+            <label className="form-label">Current role</label>
             <input
               type="text"
               name="current_role"
@@ -287,7 +287,7 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Current Company</label>
+            <label className="form-label">Current company</label>
             <input
               type="text"
               name="current_company"

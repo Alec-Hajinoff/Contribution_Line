@@ -133,14 +133,14 @@ const ContributionsTimeline = () => {
                   <h3 className="card-title h5 text-primary">{item.title}</h3>
                   <div className="text-end">
                     <span className="badge bg-secondary d-block mb-1">
-                      Event:{" "}
+                      Contribution date:{" "}
                       {new Date(item.contribution_date).toLocaleDateString()}
                     </span>
                     <small
                       className="text-muted"
                       style={{ fontSize: "0.75rem" }}
                     >
-                      Logged: {new Date(item.created_at).toLocaleDateString()}
+                      Contribution logged: {new Date(item.created_at).toLocaleDateString()}
                     </small>
                   </div>
                 </div>
@@ -177,7 +177,7 @@ const ContributionsTimeline = () => {
                   {item.evidence_links && item.evidence_links.length > 0 && (
                     <div className="mt-3">
                       <h6 className="mb-1">
-                        <strong>Links:</strong>
+                        <strong>Evidence link:</strong>
                       </h6>
                       <ul className="list-unstyled mb-0">
                         {item.evidence_links.map((link, idx) => (
@@ -202,7 +202,7 @@ const ContributionsTimeline = () => {
                   {item.files && item.files.length > 0 && (
                     <div className="mt-3">
                       <h6 className="mb-1">
-                        <strong>Attachments:</strong>
+                        <strong>Supporting file:</strong>
                       </h6>
                       <div className="d-flex flex-wrap">
                         {item.files.map((file, idx) => (
@@ -231,12 +231,12 @@ const ContributionsTimeline = () => {
                     <div className="d-flex gap-3 small text-muted">
                       {item.current_role && (
                         <span>
-                          <strong>Role:</strong> {item.current_role}
+                          <strong>Current role:</strong> {item.current_role}
                         </span>
                       )}
                       {item.current_company && (
                         <span>
-                          <strong>Company:</strong> {item.current_company}
+                          <strong>Current company:</strong> {item.current_company}
                         </span>
                       )}
                     </div>
