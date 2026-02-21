@@ -43,12 +43,9 @@ function Main() {
   return (
     <div className="main-container">
       <div className="intro-section">
-        <h2 className="intro-title">Contribution Line</h2>
         <p className="intro-text">
-          A web application that helps individual professionals capture their
-          real work contributions as they happen, so they can evidence their
-          value during performance reviews, promotion discussions, and pay
-          negotiations.
+          Capture your real work contributions as they happen - so you can
+          clearly demonstrate your value at review time.
         </p>
       </div>
 
