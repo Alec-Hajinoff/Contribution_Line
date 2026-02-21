@@ -3,34 +3,37 @@
 }
 
 .intro-section {
-  margin-bottom: 40px;
-  padding: 20px;
+  margin-bottom: 50px;
+  padding: 40px 30px;
   background: linear-gradient(
     135deg,
-    rgba(27, 62, 115, 0.05) 0%,
-    rgba(255, 140, 66, 0.05) 100%
+    rgba(27, 62, 115, 0.08) 0%,
+    rgba(255, 140, 66, 0.08) 100%
   );
-  border-left: 4px solid #1b3e73;
+  border-left: 5px solid #1b3e73;
   border-radius: 8px;
 }
 
-.intro-title {
+.intro-headline {
   color: #1b3e73;
-  font-size: 28px;
-  font-weight: 600;
+  font-size: 32px;
+  font-weight: 700;
   margin-bottom: 15px;
-  letter-spacing: 0.5px;
+  margin-top: 0;
+  letter-spacing: 0.3px;
+  line-height: 1.4;
 }
 
 .intro-text {
-  color: #333;
-  font-size: 16px;
+  color: #ff8c42;
+  font-size: 18px;
   line-height: 1.6;
   margin: 0;
+  font-weight: 500;
 }
 
 .value-points-section {
-  margin-top: 30px;
+  margin-top: 40px;
 }
 
 .section-title {
@@ -87,11 +90,17 @@
 
 @media (max-width: 768px) {
   .intro-section {
-    padding: 15px;
+    padding: 30px 20px;
+    margin-bottom: 40px;
   }
 
-  .intro-title {
-    font-size: 24px;
+  .intro-headline {
+    font-size: 26px;
+    margin-bottom: 12px;
+  }
+
+  .intro-text {
+    font-size: 16px;
   }
 
   .section-title {
@@ -117,8 +126,12 @@
 }
 
 @media (max-width: 576px) {
-  .intro-title {
-    font-size: 20px;
+  .intro-section {
+    padding: 25px 15px;
+  }
+
+  .intro-headline {
+    font-size: 22px;
   }
 
   .intro-text {

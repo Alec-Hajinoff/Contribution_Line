@@ -50,10 +50,10 @@ function Main() {
   return (
     <div className="main-container">
       <div className="intro-section">
-        <p className="intro-text">
+        <h6 className="intro-headline">
           Capture your real work contributions as they happen - so you can
           clearly demonstrate your value at review time.
-        </p>
+        </h6>
       </div>
 
       <div className="value-points-section">
