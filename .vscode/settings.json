@@ -39,5 +39,10 @@
   },
   "editor.suggest.showWords": false,
   "zencoder.codeCompletion.enable": false,
-  "zencoder.codeCompletion.enableMultiLine": false
+  "zencoder.codeCompletion.enableMultiLine": false,
+  "Codegeex.GenerationPreference": "automatic",
+  "Codegeex.CommitMessage.LanguagePreference": "English",
+  "Codegeex.Chat.LanguagePreference": "English",
+  "Codegeex.Comment.LanguagePreference": "English",
+  "Codegeex.SidebarUI.LanguagePreference": "English"
 }
