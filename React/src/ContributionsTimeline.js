@@ -153,9 +153,9 @@ const ContributionsTimeline = () => {
                       </span>
                     </span>
 
-                    <small
+                    <span
                       style={{
-                        fontSize: "0.75rem",
+                        fontSize: "0.9rem",
                         color: "#1b3e73",
                         fontWeight: "600",
                         display: "block",
@@ -165,7 +165,7 @@ const ContributionsTimeline = () => {
                       <span style={{ color: "#555", fontWeight: "400" }}>
                         {new Date(item.created_at).toLocaleDateString()}
                       </span>
-                    </small>
+                    </span>
                   </div>
                 </div>
 
