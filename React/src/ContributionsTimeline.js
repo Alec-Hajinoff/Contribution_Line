@@ -134,19 +134,37 @@ const ContributionsTimeline = () => {
                     <h6 className="mb-2">
                       <strong>Contribution title:</strong>
                     </h6>
-                    <h3 className="card-title h5 text-primary">{item.title}</h3>
+                    <h3 className="card-title h5" style={{ color: "#1b3e73" }}>
+                      {item.title}
+                    </h3>
                   </div>
                   <div className="text-end">
-                    <span className="badge bg-secondary d-block mb-1">
-                      Contribution date:{" "}
-                      {new Date(item.contribution_date).toLocaleDateString()}
-                    </span>
-                    <small
-                      className="text-muted"
-                      style={{ fontSize: "0.75rem" }}
+                    <span
+                      className="d-block mb-1"
+                      style={{
+                        color: "#1b3e73",
+                        fontWeight: "600",
+                        fontSize: "0.9rem",
+                      }}
                     >
-                      Contribution logged:{" "}
-                      {new Date(item.created_at).toLocaleDateString()}
+                      <strong>Contribution date:</strong>{" "}
+                      <span style={{ color: "#555", fontWeight: "400" }}>
+                        {new Date(item.contribution_date).toLocaleDateString()}
+                      </span>
+                    </span>
+
+                    <small
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#1b3e73",
+                        fontWeight: "600",
+                        display: "block",
+                      }}
+                    >
+                      <strong>Contribution logged:</strong>{" "}
+                      <span style={{ color: "#555", fontWeight: "400" }}>
+                        {new Date(item.created_at).toLocaleDateString()}
+                      </span>
                     </small>
                   </div>
                 </div>
@@ -163,7 +181,8 @@ const ContributionsTimeline = () => {
                       ).map((cat, idx) => (
                         <span
                           key={idx}
-                          className="badge bg-info text-dark me-1"
+                          className="badge me-1"
+                          style={{ backgroundColor: "#ff8c42", color: "#fff" }}
                         >
                           {cat}
                         </span>
@@ -242,15 +261,20 @@ const ContributionsTimeline = () => {
                   )}
 
                   <div className="mt-3 pt-2 border-top">
-                    <div className="d-flex gap-3 small text-muted">
+                    <div className="d-flex gap-3 small">
                       {item.current_role && (
-                        <span>
-                          <strong>Current role:</strong> {item.current_role}
+                        <span style={{ color: "#555" }}>
+                          <strong style={{ color: "#1b3e73" }}>
+                            Current role:
+                          </strong>{" "}
+                          {item.current_role}
                         </span>
                       )}
                       {item.current_company && (
-                        <span>
-                          <strong>Current company:</strong>{" "}
+                        <span style={{ color: "#555" }}>
+                          <strong style={{ color: "#1b3e73" }}>
+                            Current company:
+                          </strong>{" "}
                           {item.current_company}
                         </span>
                       )}
@@ -260,7 +284,7 @@ const ContributionsTimeline = () => {
                   <div className="d-flex justify-content-between align-items-center mt-4">
                     <div></div>
                     <button
-                      className="btn btn-sm btn-outline-primary"
+                      className="btn btn-sm btn-secondary"
                       onClick={() => handleAddToPresentation(item)}
                     >
                       Add to presentation view
