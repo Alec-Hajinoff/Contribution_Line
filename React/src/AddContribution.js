@@ -292,7 +292,7 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="d-flex align-items-center">
-            <button type="submit" className="btn btn-primary me-2">
+            <button type="submit" className="btn btn-secondary me-2">
               Save
             </button>
             {status === "saving" && <small>Saving...</small>}
