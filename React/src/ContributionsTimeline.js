@@ -130,7 +130,12 @@ const ContributionsTimeline = () => {
             <div key={item.id} className="timeline-card card mb-4 shadow-sm">
               <div className="card-body">
                 <div className="d-flex justify-content-between align-items-start">
-                  <h3 className="card-title h5 text-primary">{item.title}</h3>
+                  <div className="flex-grow-1">
+                    <h6 className="mb-2">
+                      <strong>Contribution title:</strong>
+                    </h6>
+                    <h3 className="card-title h5 text-primary">{item.title}</h3>
+                  </div>
                   <div className="text-end">
                     <span className="badge bg-secondary d-block mb-1">
                       Contribution date:{" "}
@@ -140,21 +145,30 @@ const ContributionsTimeline = () => {
                       className="text-muted"
                       style={{ fontSize: "0.75rem" }}
                     >
-                      Contribution logged: {new Date(item.created_at).toLocaleDateString()}
+                      Contribution logged:{" "}
+                      {new Date(item.created_at).toLocaleDateString()}
                     </small>
                   </div>
                 </div>
 
                 {item.categories && (
-                  <div className="mb-2">
-                    {(Array.isArray(item.categories)
-                      ? item.categories
-                      : JSON.parse(item.categories || "[]")
-                    ).map((cat, idx) => (
-                      <span key={idx} className="badge bg-info text-dark me-1">
-                        {cat}
-                      </span>
-                    ))}
+                  <div className="mb-3">
+                    <h6 className="mb-2">
+                      <strong>Categories:</strong>
+                    </h6>
+                    <div>
+                      {(Array.isArray(item.categories)
+                        ? item.categories
+                        : JSON.parse(item.categories || "[]")
+                      ).map((cat, idx) => (
+                        <span
+                          key={idx}
+                          className="badge bg-info text-dark me-1"
+                        >
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                 )}
 
@@ -236,7 +250,8 @@ const ContributionsTimeline = () => {
                       )}
                       {item.current_company && (
                         <span>
-                          <strong>Current company:</strong> {item.current_company}
+                          <strong>Current company:</strong>{" "}
+                          {item.current_company}
                         </span>
                       )}
                     </div>
