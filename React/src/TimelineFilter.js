@@ -9,7 +9,7 @@ const TimelineFilter = ({ filters, setFilters, onClear }) => {
 
   return (
     <div className="timeline-filter">
-      <div className="card mb-4 shadow-sm border-primary">
+      <div className="card mb-4 shadow-sm">
         <div className="card-body">
           <h5 className="card-title h6 mb-3">Filter contributions</h5>
           <div className="row g-3">
