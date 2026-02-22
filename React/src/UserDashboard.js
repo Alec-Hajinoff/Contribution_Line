@@ -17,7 +17,7 @@ function UserDashboard() {
         <LogoutComponent />
       </div>
 
-      <div className="row mt-4">
+      <div className="row mt-4 align-items-start">
         <div className="col-md-4">
           <AddContribution onContributionAdded={handleContributionAdded} />
         </div>
