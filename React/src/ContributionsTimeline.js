@@ -108,7 +108,7 @@ const ContributionsTimeline = () => {
   if (error) return <div className="alert alert-danger">{error}</div>;
 
   return (
-    <div className="container mt-4">
+    <div>
       <TimelineFilter
         filters={filters}
         setFilters={setFilters}
