@@ -152,6 +152,10 @@ function AddContribution({ onContributionAdded }) {
     <div className="card add-contribution mb-3">
       <div className="card-body">
         <form onSubmit={handleSubmit} className="form-container">
+          <div className="mb-3">
+            <h5 className="add-contribution-heading">Add a contribution</h5>
+          </div>
+
           <div className="mb-2">
             <label className="form-label">Contribution title</label>
             <input

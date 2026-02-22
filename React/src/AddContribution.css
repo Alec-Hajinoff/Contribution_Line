@@ -127,6 +127,13 @@
   font-size: 13px;
   line-height: 1.6;
 }
+.add-contribution-heading {
+  color: #1b3e73;
+  font-weight: 700;
+  font-size: 18px;
+  margin-bottom: 20px;
+  margin-top: 0;
+}
 
 .form-container {
   animation: slideDown 0.3s ease-out;
