@@ -193,17 +193,17 @@ const ContributionsTimeline = () => {
 
                 <div className="mt-3">
                   <h6>
-                    <strong>What Happened:</strong>
+                    <strong>What happened:</strong>
                   </h6>
                   <p className="card-text text-muted">{item.what_happened}</p>
 
                   <h6>
-                    <strong>Why It Mattered:</strong>
+                    <strong>Why it mattered:</strong>
                   </h6>
                   <p className="card-text text-muted">{item.why_it_mattered}</p>
 
                   <h6>
-                    <strong>Outcome & Impact:</strong>
+                    <strong>Outcome & impact:</strong>
                   </h6>
                   <p className="card-text text-muted">{item.outcome_impact}</p>
 

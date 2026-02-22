@@ -41,7 +41,7 @@ const TimelineFilter = ({ filters, setFilters, onClear }) => {
               className="btn btn-link btn-sm text-muted text-decoration-none"
               onClick={onClear}
             >
-              Clear All Filters
+              Clear all filters
             </button>
           </div>
         </div>
