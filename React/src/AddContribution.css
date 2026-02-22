@@ -1,41 +1,136 @@
-.add-contribution .card-body {
-  padding: 12px;
-}
-.add-contribution .card-title {
-  margin-bottom: 8px;
-  font-size: 1.05rem;
-}
-.add-contribution .form-label {
-  font-weight: 600;
-}
-.add-contribution .form-text {
-  font-size: 0.8rem;
-}
-
-.add-contribution .mb-2 {
-  margin-bottom: 0.5rem;
-}
-
-.add-contribution .toggle-button {
-  width: 100%;
-  text-align: left;
-  font-size: 1rem;
-  padding: 10px 12px;
-  margin-bottom: 12px;
-  border-radius: 4px;
+.add-contribution .card {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: all 0.3s ease;
 }
 
-.add-contribution .toggle-button:hover {
-  background-color: #e7f1ff;
-  border-color: #0d6efd;
+.add-contribution .card:hover {
+  border-color: #ff8c42;
+  box-shadow: 0 8px 16px rgba(27, 62, 115, 0.15);
+  transform: translateY(-4px);
 }
 
-.add-contribution .toggle-button:active {
-  background-color: #e7f1ff;
+.add-contribution .card-body {
+  padding: 30px;
+  background: linear-gradient(
+    135deg,
+    rgba(27, 62, 115, 0.02) 0%,
+    rgba(255, 140, 66, 0.02) 100%
+  );
 }
 
-.add-contribution .form-container {
+.add-contribution .form-label {
+  color: #1b3e73;
+  font-weight: 700;
+  font-size: 14px;
+  margin-bottom: 10px;
+}
+
+.add-contribution .form-control,
+.add-contribution textarea {
+  border: 1px solid #e0e0e0;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  color: #333;
+}
+
+.add-contribution .form-control:focus,
+.add-contribution textarea:focus {
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+}
+
+.add-contribution .form-check {
+  padding: 8px 0;
+  margin-bottom: 10px;
+}
+
+.add-contribution .form-check-input {
+  width: 18px;
+  height: 18px;
+  border: 1px solid #d0d0d0;
+  border-radius: 4px;
+  margin-top: 3px;
+  cursor: pointer;
+  accent-color: #ff8c42;
+  transition: all 0.3s ease;
+}
+
+.add-contribution .form-check-input:focus {
+  border-color: #ff8c42;
+  box-shadow: 0 0 0 3px rgba(255, 140, 66, 0.1);
+}
+
+.add-contribution .form-check-input:checked {
+  background-color: #ff8c42;
+  border-color: #ff8c42;
+}
+
+.add-contribution .form-check-label {
+  color: #333;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  margin-left: 10px;
+  margin-bottom: 0;
+}
+
+.add-contribution .mb-2 {
+  margin-bottom: 18px;
+}
+
+.add-contribution .mb-3 {
+  margin-bottom: 24px;
+}
+
+.add-contribution .btn-primary {
+  background-color: #ff8c42;
+  border-color: #ff8c42;
+  border-radius: 8px;
+  font-weight: 700;
+  padding: 12px 32px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  color: #fff;
+}
+
+.add-contribution .btn-primary:hover {
+  background-color: #e67e32;
+  border-color: #e67e32;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(255, 140, 66, 0.3);
+}
+
+.add-contribution .btn-primary:active {
+  background-color: #d67028;
+  border-color: #d67028;
+  transform: translateY(0);
+}
+
+.add-contribution .text-success {
+  color: #28a745;
+  font-weight: 600;
+}
+
+.add-contribution .text-danger {
+  color: #dc3545;
+  font-weight: 600;
+}
+
+.add-contribution .d-flex {
+  gap: 16px;
+}
+
+.add-contribution small {
+  color: #555;
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.form-container {
   animation: slideDown 0.3s ease-out;
 }
 
@@ -47,6 +142,45 @@
   }
   to {
     opacity: 1;
-    max-height: 1000px;
+    max-height: 1500px;
+  }
+}
+
+@media (max-width: 768px) {
+  .add-contribution .card-body {
+    padding: 20px;
+  }
+
+  .add-contribution .form-label {
+    font-size: 13px;
+  }
+
+  .add-contribution .form-control,
+  .add-contribution textarea {
+    font-size: 13px;
+    padding: 10px 12px;
+  }
+
+  .add-contribution .mb-2 {
+    margin-bottom: 14px;
+  }
+
+  .add-contribution .mb-3 {
+    margin-bottom: 18px;
+  }
+}
+
+@media (max-width: 576px) {
+  .add-contribution .card-body {
+    padding: 15px;
+  }
+
+  .add-contribution .btn-primary {
+    padding: 10px 24px;
+    font-size: 13px;
+  }
+
+  .add-contribution small {
+    font-size: 12px;
   }
 }

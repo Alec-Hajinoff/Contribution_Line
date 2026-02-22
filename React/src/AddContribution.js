@@ -12,12 +12,6 @@ const CATEGORY_OPTIONS = [
   "Mentoring / Knowledge Sharing",
 ];
 
-/**
- * AddContribution - Form component for adding new contributions
- * @param {Object} props - Component props
- * @param {Function} props.onContributionAdded - Callback function called after successful submission
- *                                               Notifies parent to refresh the timeline
- */
 function AddContribution({ onContributionAdded }) {
   const [file, setFile] = useState(null);
 
@@ -207,9 +201,7 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label d-block">
-              Categories
-            </label>
+            <label className="form-label d-block">Categories</label>
             <div className="mt-2">
               {CATEGORY_OPTIONS.map((category) => (
                 <div key={category} className="form-check mb-2">
