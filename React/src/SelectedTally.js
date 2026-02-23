@@ -5,7 +5,7 @@ const SelectedTally = ({ count, onDisplay }) => {
   return (
     <div className="selected-tally-bar">
       <div className="mb-2">{count} selected</div>
-      <button className="btn btn-sm btn-primary w-100" onClick={onDisplay}>
+      <button className="btn btn-secondary w-100" onClick={onDisplay}>
         Display presentation view
       </button>
     </div>
