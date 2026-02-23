@@ -32,7 +32,7 @@ try {
         PDO::ATTR_EMULATE_PREPARES => false
     ]);
 
-    $stmt = $pdo->prepare('SELECT name, contributions_id, created_at FROM presentation_view WHERE id = ?');
+    $stmt = $pdo->prepare('SELECT contributions_id, created_at FROM presentation_view WHERE id = ?');
     $stmt->execute([$presentationId]);
     $view = $stmt->fetch();
 
@@ -45,7 +45,6 @@ try {
 
     if (empty($ids)) {
         echo json_encode([
-            'name' => $view['name'],
             'created_at' => $view['created_at'],
             'contributions' => []
         ]);
@@ -95,7 +94,6 @@ try {
 
     echo json_encode([
         'status' => 'success',
-        'name' => $view['name'],
         'created_at' => $view['created_at'],
         'contributions' => $contributions
     ]);
