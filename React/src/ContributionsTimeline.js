@@ -88,6 +88,10 @@ const ContributionsTimeline = () => {
     }
   };
 
+  const handleCancelPresentation = () => {
+    setSelectedContributions([]);
+  };
+
   const downloadFile = (base64Data, fileName, mimeType) => {
     const byteCharacters = atob(base64Data);
     const byteNumbers = new Array(byteCharacters.length);
@@ -119,6 +123,7 @@ const ContributionsTimeline = () => {
         <SelectedTally
           count={selectedContributions.length}
           onDisplay={handleDisplayPresentation}
+          onCancel={handleCancelPresentation}
         />
       )}
 

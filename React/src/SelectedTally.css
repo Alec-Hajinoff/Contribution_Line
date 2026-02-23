@@ -11,6 +11,12 @@
   width: 220px;
 }
 
+.selected-tally-buttons {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .btn-secondary {
   background-color: #f0ede8;
   border-color: #f0ede8;
@@ -33,4 +39,28 @@
 .btn-secondary:active {
   background-color: #dfd6cd;
   border-color: #dfd6cd;
+}
+
+.btn-danger {
+  background-color: #dc3545;
+  border-color: #dc3545;
+  color: #fff;
+  font-weight: 500;
+  border-radius: 8px;
+  padding: 12px 32px;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  border: 1px solid #dc3545;
+  cursor: pointer;
+}
+
+.btn-danger:hover {
+  background-color: #c82333;
+  border-color: #c82333;
+  color: #fff;
+}
+
+.btn-danger:active {
+  background-color: #bd2130;
+  border-color: #bd2130;
 }
