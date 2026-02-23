@@ -36,6 +36,20 @@ try {
     $stmt->execute([$presentationId]);
     $view = $stmt->fetch();
 
+    $stmt = $pdo->prepare('SELECT contributions_id, created_at, users_id FROM presentation_view WHERE id = ?');
+    $stmt->execute([$presentationId]);
+    $view = $stmt->fetch();
+
+    if (!$view) {
+        echo json_encode(['status' => 'error', 'message' => 'Presentation not found.']);
+        exit;
+    }
+
+    $userStmt = $pdo->prepare('SELECT name FROM users WHERE id = ?');
+    $userStmt->execute([$view['users_id']]);
+    $user = $userStmt->fetch();
+    $userName = $user ? $user['name'] : null;
+
     if (!$view) {
         echo json_encode(['status' => 'error', 'message' => 'Presentation not found.']);
         exit;
@@ -45,6 +59,8 @@ try {
 
     if (empty($ids)) {
         echo json_encode([
+            'status' => 'success',
+            'name' => $userName,
             'created_at' => $view['created_at'],
             'contributions' => []
         ]);
@@ -94,6 +110,7 @@ try {
 
     echo json_encode([
         'status' => 'success',
+        'name' => $userName,
         'created_at' => $view['created_at'],
         'contributions' => $contributions
     ]);
