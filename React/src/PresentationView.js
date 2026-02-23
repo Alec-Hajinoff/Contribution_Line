@@ -73,8 +73,11 @@ const PresentationView = () => {
     <div className="presentation-container">
       <header className="presentation-header">
         <h1 className="presentation-title">
-          {data.name || "Contribution Presentation"}
+          {data.name
+            ? `Professional Contribution Summary - ${data.name}`
+            : "Professional Contribution Summary"}
         </h1>
+
         <div className="presentation-metadata">
           <span>Prepared on: {new Date().toLocaleDateString()}</span>
         </div>
