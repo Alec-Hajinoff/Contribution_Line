@@ -38,7 +38,6 @@ if (!isset($input['contributions_id']) || !is_array($input['contributions_id']))
 }
 
 $contributionIdsJson = json_encode($input['contributions_id']);
-$presentationName = $input['name'] ?? null;
 
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
@@ -50,13 +49,12 @@ try {
     $pdo->beginTransaction();
 
     $stmt = $pdo->prepare('
-        INSERT INTO presentation_view (users_id, name, contributions_id, created_at) 
-        VALUES (?, ?, ?, NOW())
-    ');
+    INSERT INTO presentation_view (users_id, contributions_id, created_at) 
+    VALUES (?, ?, NOW())
+');
 
     $stmt->execute([
         $userId,
-        $presentationName,
         $contributionIdsJson
     ]);
 
