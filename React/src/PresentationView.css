@@ -40,7 +40,6 @@
   border: 1px solid #e0e0e0;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   margin-bottom: 1.5rem;
-  transition: transform 0.2s ease-in-out;
 }
 
 .timeline-card::before {
@@ -56,14 +55,19 @@
   box-shadow: 0 0 0 2px #ff8c42;
 }
 
-.presentation-container .card-title {
+.presentation-container h6 {
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
   color: #1b3e73 !important;
   font-weight: 600;
 }
 
-.presentation-container h6 {
-  margin-top: 1rem;
-  font-size: 0.95rem;
+.presentation-container .card-body > .d-flex h6 {
+  margin-top: 0;
+}
+
+.presentation-container .card-title {
   color: #1b3e73 !important;
   font-weight: 600;
 }
@@ -98,13 +102,7 @@
   color: #1b3e73 !important;
   font-weight: 500 !important;
   border-radius: 8px !important;
-  transition: all 0.3s ease !important;
   border: 1px solid #f0ede8 !important;
-  cursor: pointer;
-}
-
-.presentation-container .btn-secondary:hover {
-  background-color: #e8dfd6 !important;
 }
 
 @media print {
@@ -113,13 +111,11 @@
     width: 100%;
     max-width: 100%;
   }
-
   .timeline-card {
     break-inside: avoid;
     box-shadow: none !important;
     border: 1px solid #dee2e6 !important;
   }
-
   .d-print-none {
     display: none !important;
   }

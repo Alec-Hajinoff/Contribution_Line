@@ -88,7 +88,12 @@ const PresentationView = () => {
           <div key={item.id} className="timeline-card card mb-4 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-start">
-                <h3 className="card-title h5">{item.title}</h3>
+                <div className="flex-grow-1">
+                  <h6>
+                    <strong>Contribution title:</strong>
+                  </h6>
+                  <h3 className="card-title h5">{item.title}</h3>
+                </div>
                 <div className="text-end">
                   <span className="d-block mb-1 date-info-block">
                     <strong>Contribution date:</strong>{" "}
@@ -107,15 +112,20 @@ const PresentationView = () => {
               </div>
 
               {item.categories && (
-                <div className="mb-2">
-                  {(Array.isArray(item.categories)
-                    ? item.categories
-                    : JSON.parse(item.categories || "[]")
-                  ).map((cat, idx) => (
-                    <span key={idx} className="badge category-badge me-1">
-                      {cat}
-                    </span>
-                  ))}
+                <div className="mb-3">
+                  <h6>
+                    <strong>Categories:</strong>
+                  </h6>
+                  <div>
+                    {(Array.isArray(item.categories)
+                      ? item.categories
+                      : JSON.parse(item.categories || "[]")
+                    ).map((cat, idx) => (
+                      <span key={idx} className="badge category-badge me-1">
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
                 </div>
               )}
 
@@ -196,13 +206,17 @@ const PresentationView = () => {
                 <div className="d-flex gap-3 small text-muted">
                   {item.current_role && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>Current role:</strong>{" "}
+                      <strong style={{ color: "#1b3e73" }}>
+                        Current role:
+                      </strong>{" "}
                       {item.current_role}
                     </span>
                   )}
                   {item.current_company && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>Current company:</strong>{" "}
+                      <strong style={{ color: "#1b3e73" }}>
+                        Current company:
+                      </strong>{" "}
                       {item.current_company}
                     </span>
                   )}
