@@ -78,3 +78,34 @@ h6 {
   background-color: #dfd6cd;
   border-color: #dfd6cd;
 }
+
+.date-label {
+  color: #1b3e73;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+.date-value {
+  color: #555;
+  font-weight: 400;
+}
+
+.logged-label {
+  font-size: 0.9rem;
+  color: #1b3e73;
+  font-weight: 600;
+  display: block;
+}
+
+.category-badge {
+  background-color: #ff8c42;
+  color: #fff;
+}
+
+.role-info-text {
+  color: #555;
+}
+
+.role-info-label {
+  color: #1b3e73;
+}

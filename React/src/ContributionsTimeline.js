@@ -139,35 +139,19 @@ const ContributionsTimeline = () => {
                     <h6 className="mb-2">
                       <strong>Contribution title:</strong>
                     </h6>
-                    <h3 className="card-title h5" style={{ color: "#1b3e73" }}>
-                      {item.title}
-                    </h3>
+                    <h3 className="card-title h5">{item.title}</h3>
                   </div>
                   <div className="text-end">
-                    <span
-                      className="d-block mb-1"
-                      style={{
-                        color: "#1b3e73",
-                        fontWeight: "600",
-                        fontSize: "0.9rem",
-                      }}
-                    >
+                    <span className="d-block mb-1 date-label">
                       <strong>Contribution date:</strong>{" "}
-                      <span style={{ color: "#555", fontWeight: "400" }}>
+                      <span className="date-value">
                         {new Date(item.contribution_date).toLocaleDateString()}
                       </span>
                     </span>
 
-                    <span
-                      style={{
-                        fontSize: "0.9rem",
-                        color: "#1b3e73",
-                        fontWeight: "600",
-                        display: "block",
-                      }}
-                    >
+                    <span className="logged-label">
                       <strong>Contribution logged:</strong>{" "}
-                      <span style={{ color: "#555", fontWeight: "400" }}>
+                      <span className="date-value">
                         {new Date(item.created_at).toLocaleDateString()}
                       </span>
                     </span>
@@ -184,11 +168,7 @@ const ContributionsTimeline = () => {
                         ? item.categories
                         : JSON.parse(item.categories || "[]")
                       ).map((cat, idx) => (
-                        <span
-                          key={idx}
-                          className="badge me-1"
-                          style={{ backgroundColor: "#ff8c42", color: "#fff" }}
-                        >
+                        <span key={idx} className="badge me-1 category-badge">
                           {cat}
                         </span>
                       ))}
@@ -268,16 +248,16 @@ const ContributionsTimeline = () => {
                   <div className="mt-3 pt-2 border-top">
                     <div className="d-flex gap-3 small">
                       {item.current_role && (
-                        <span style={{ color: "#555" }}>
-                          <strong style={{ color: "#1b3e73" }}>
+                        <span className="role-info-text">
+                          <strong className="role-info-label">
                             Current role:
                           </strong>{" "}
                           {item.current_role}
                         </span>
                       )}
                       {item.current_company && (
-                        <span style={{ color: "#555" }}>
-                          <strong style={{ color: "#1b3e73" }}>
+                        <span className="role-info-text">
+                          <strong className="role-info-label">
                             Current company:
                           </strong>{" "}
                           {item.current_company}
