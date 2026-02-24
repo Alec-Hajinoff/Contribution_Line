@@ -149,7 +149,7 @@ const PresentationView = () => {
               {item.evidence_links && item.evidence_links.length > 0 && (
                 <div className="mt-3">
                   <h6>
-                    <strong>Evidence link:</strong>
+                    <strong>Supporting link:</strong>
                   </h6>
                   <ul className="list-unstyled mb-0">
                     {item.evidence_links.map((link, idx) => (
@@ -180,8 +180,7 @@ const PresentationView = () => {
                     {item.files.map((file, idx) => (
                       <button
                         key={idx}
-                        className="btn btn-link p-0 me-3 text-decoration-none small text-dark d-flex align-items-center"
-                        style={{ textAlign: "left" }}
+                        className="btn btn-link p-0 me-3 text-decoration-none small text-dark d-flex align-items-center file-btn"
                         onClick={() =>
                           downloadFile(
                             file.file_data,
@@ -204,17 +203,13 @@ const PresentationView = () => {
                 <div className="d-flex gap-3 small text-muted">
                   {item.current_role && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>
-                        Current role:
-                      </strong>{" "}
+                      <strong className="info-label">Current role:</strong>{" "}
                       {item.current_role}
                     </span>
                   )}
                   {item.current_company && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>
-                        Current company:
-                      </strong>{" "}
+                      <strong className="info-label">Current company:</strong>{" "}
                       {item.current_company}
                     </span>
                   )}

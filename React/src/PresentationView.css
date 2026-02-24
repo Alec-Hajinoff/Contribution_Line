@@ -120,3 +120,11 @@
     display: none !important;
   }
 }
+
+.file-btn {
+  text-align: left;
+}
+
+.info-label {
+  color: #1b3e73;
+}
