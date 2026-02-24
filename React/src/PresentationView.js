@@ -149,7 +149,7 @@ const PresentationView = () => {
               {item.evidence_links && item.evidence_links.length > 0 && (
                 <div className="mt-3">
                   <h6>
-                    <strong>Supporting link:</strong>
+                    <strong>Evidence link:</strong>
                   </h6>
                   <ul className="list-unstyled mb-0">
                     {item.evidence_links.map((link, idx) => (
@@ -190,12 +190,10 @@ const PresentationView = () => {
                           )
                         }
                       >
-                        <span className="badge border text-secondary p-2">
-                          <span role="img" aria-label="document">
-                            📄
-                          </span>{" "}
-                          {file.file_name}
-                        </span>
+                        <span role="img" aria-label="document">
+                          📄
+                        </span>{" "}
+                        {file.file_name}
                       </button>
                     ))}
                   </div>
