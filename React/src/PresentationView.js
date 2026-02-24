@@ -88,16 +88,21 @@ const PresentationView = () => {
           <div key={item.id} className="timeline-card card mb-4 shadow-sm">
             <div className="card-body">
               <div className="d-flex justify-content-between align-items-start">
-                <h3 className="card-title h5 text-primary">{item.title}</h3>
+                <h3 className="card-title h5">{item.title}</h3>
                 <div className="text-end">
-                  <span className="badge bg-secondary d-block mb-1">
-                    Event:{" "}
-                    {new Date(item.contribution_date).toLocaleDateString()}
+                  <span className="d-block mb-1 date-info-block">
+                    <strong>Contribution date:</strong>{" "}
+                    <span className="date-info-value">
+                      {new Date(item.contribution_date).toLocaleDateString()}
+                    </span>
                   </span>
 
-                  <small className="text-muted" style={{ fontSize: "0.75rem" }}>
-                    Logged: {new Date(item.created_at).toLocaleDateString()}
-                  </small>
+                  <span className="d-block date-info-block">
+                    <strong>Contribution logged:</strong>{" "}
+                    <span className="date-info-value">
+                      {new Date(item.created_at).toLocaleDateString()}
+                    </span>
+                  </span>
                 </div>
               </div>
 
@@ -107,7 +112,7 @@ const PresentationView = () => {
                     ? item.categories
                     : JSON.parse(item.categories || "[]")
                   ).map((cat, idx) => (
-                    <span key={idx} className="badge bg-info text-dark me-1">
+                    <span key={idx} className="badge category-badge me-1">
                       {cat}
                     </span>
                   ))}
@@ -118,22 +123,22 @@ const PresentationView = () => {
                 <h6>
                   <strong>What Happened:</strong>
                 </h6>
-                <p className="card-text text-muted">{item.what_happened}</p>
+                <p className="card-text">{item.what_happened}</p>
 
                 <h6>
                   <strong>Why It Mattered:</strong>
                 </h6>
-                <p className="card-text text-muted">{item.why_it_mattered}</p>
+                <p className="card-text">{item.why_it_mattered}</p>
 
                 <h6>
                   <strong>Outcome & Impact:</strong>
                 </h6>
-                <p className="card-text text-muted">{item.outcome_impact}</p>
+                <p className="card-text">{item.outcome_impact}</p>
               </div>
 
               {item.evidence_links && item.evidence_links.length > 0 && (
                 <div className="mt-3">
-                  <h6 className="text-dark small">
+                  <h6>
                     <strong>Links:</strong>
                   </h6>
                   <ul className="list-unstyled mb-0">
@@ -158,7 +163,7 @@ const PresentationView = () => {
 
               {item.files && item.files.length > 0 && (
                 <div className="mt-3">
-                  <h6 className="text-dark small">
+                  <h6>
                     <strong>Attached Evidence (Click to download):</strong>
                   </h6>
                   <div className="d-flex flex-wrap">
@@ -191,12 +196,14 @@ const PresentationView = () => {
                 <div className="d-flex gap-3 small text-muted">
                   {item.current_role && (
                     <span>
-                      <strong>Role:</strong> {item.current_role}
+                      <strong style={{ color: "#1b3e73" }}>Role:</strong>{" "}
+                      {item.current_role}
                     </span>
                   )}
                   {item.current_company && (
                     <span>
-                      <strong>Company:</strong> {item.current_company}
+                      <strong style={{ color: "#1b3e73" }}>Company:</strong>{" "}
+                      {item.current_company}
                     </span>
                   )}
                 </div>
@@ -208,7 +215,7 @@ const PresentationView = () => {
 
       <div className="text-center mt-5 mb-5 d-print-none">
         <button
-          className="btn btn-primary px-4 shadow-sm"
+          className="btn btn-secondary px-4 shadow-sm"
           onClick={() => window.print()}
         >
           Print Presentation / Save as PDF
