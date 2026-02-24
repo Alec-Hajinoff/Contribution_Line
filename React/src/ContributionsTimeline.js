@@ -215,7 +215,7 @@ const ContributionsTimeline = () => {
                   {item.evidence_links && item.evidence_links.length > 0 && (
                     <div className="mt-3">
                       <h6 className="mb-1">
-                        <strong>Evidence link:</strong>
+                        <strong>Supporting link:</strong>
                       </h6>
                       <ul className="list-unstyled mb-0">
                         {item.evidence_links.map((link, idx) => (

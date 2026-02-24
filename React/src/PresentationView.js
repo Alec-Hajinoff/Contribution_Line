@@ -121,17 +121,17 @@ const PresentationView = () => {
 
               <div className="mt-3">
                 <h6>
-                  <strong>What Happened:</strong>
+                  <strong>What happened:</strong>
                 </h6>
                 <p className="card-text">{item.what_happened}</p>
 
                 <h6>
-                  <strong>Why It Mattered:</strong>
+                  <strong>Why it mattered:</strong>
                 </h6>
                 <p className="card-text">{item.why_it_mattered}</p>
 
                 <h6>
-                  <strong>Outcome & Impact:</strong>
+                  <strong>Outcome & impact:</strong>
                 </h6>
                 <p className="card-text">{item.outcome_impact}</p>
               </div>
@@ -139,7 +139,7 @@ const PresentationView = () => {
               {item.evidence_links && item.evidence_links.length > 0 && (
                 <div className="mt-3">
                   <h6>
-                    <strong>Links:</strong>
+                    <strong>Supporting link:</strong>
                   </h6>
                   <ul className="list-unstyled mb-0">
                     {item.evidence_links.map((link, idx) => (
@@ -164,7 +164,7 @@ const PresentationView = () => {
               {item.files && item.files.length > 0 && (
                 <div className="mt-3">
                   <h6>
-                    <strong>Attached Evidence (Click to download):</strong>
+                    <strong>Supporting file:</strong>
                   </h6>
                   <div className="d-flex flex-wrap">
                     {item.files.map((file, idx) => (
@@ -196,13 +196,13 @@ const PresentationView = () => {
                 <div className="d-flex gap-3 small text-muted">
                   {item.current_role && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>Role:</strong>{" "}
+                      <strong style={{ color: "#1b3e73" }}>Current role:</strong>{" "}
                       {item.current_role}
                     </span>
                   )}
                   {item.current_company && (
                     <span>
-                      <strong style={{ color: "#1b3e73" }}>Company:</strong>{" "}
+                      <strong style={{ color: "#1b3e73" }}>Current company:</strong>{" "}
                       {item.current_company}
                     </span>
                   )}
