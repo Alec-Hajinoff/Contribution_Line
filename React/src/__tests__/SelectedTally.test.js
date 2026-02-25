@@ -1,120 +1,39 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useNavigate } from "react-router-dom";
-import UserLogin from "../UserLogin";
+import SelectedTally from "../SelectedTally";
 
-jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn(),
-}));
-
-describe("UserLogin", () => {
-  let navigateMock;
-
-  beforeEach(() => {
-    navigateMock = jest.fn();
-    useNavigate.mockReturnValue(navigateMock);
-
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            status: "success",
-            registration_status: "Registration data is not complete",
-          }),
-      })
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("renders the login form", () => {
-    render(<UserLogin />);
-
-    expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
-  });
-
-  it("updates form data when input values change", () => {
-    render(<UserLogin />);
-
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-
-    expect(emailInput.value).toBe("john@example.com");
-    expect(passwordInput.value).toBe("password123");
-  });
-
-  it("submits the form and navigates to AccountPage on success", async () => {
-    render(<UserLogin />);
-
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
-
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      "http://localhost:8001/Readings_From_Sensors/login_capture.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: "john@example.com",
-          password: "password123",
-        }),
-      }
+describe("SelectedTally", () => {
+  test("renders the correct count", () => {
+    render(
+      <SelectedTally count={3} onDisplay={jest.fn()} onCancel={jest.fn()} />,
     );
 
-    expect(navigateMock).toHaveBeenCalledWith("/PullReadings");
+    expect(screen.getByText("3 selected")).toBeInTheDocument();
   });
 
-  it("displays an error message when login fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ status: "failure" }),
-      })
+  test("calls onDisplay when 'Display presentation view' is clicked", () => {
+    const mockDisplay = jest.fn();
+
+    render(
+      <SelectedTally count={1} onDisplay={mockDisplay} onCancel={jest.fn()} />,
     );
 
-    render(<UserLogin />);
+    fireEvent.click(
+      screen.getByRole("button", { name: /Display presentation view/i }),
+    );
 
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
-
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    expect(
-      screen.getByText("Sign in failed. Please try again.")
-    ).toBeInTheDocument();
+    expect(mockDisplay).toHaveBeenCalledTimes(1);
   });
 
-  it("displays an error message when fetch fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.reject(new Error("Network error"))
+  test("calls onCancel when 'Cancel' is clicked", () => {
+    const mockCancel = jest.fn();
+
+    render(
+      <SelectedTally count={1} onDisplay={jest.fn()} onCancel={mockCancel} />,
     );
 
-    render(<UserLogin />);
+    fireEvent.click(screen.getByRole("button", { name: /Cancel/i }));
 
-    const submitButton = screen.getByRole("button", { name: /login/i });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(screen.getByText("An error occurred.")).toBeInTheDocument();
+    expect(mockCancel).toHaveBeenCalledTimes(1);
   });
 });

@@ -1,186 +1,241 @@
 import React from "react";
-import { render, screen, waitFor, fireEvent } from "@testing-library/react";
-import PullReadings from "../PullReadings";
-import { pullReadingsFunction, pullHistory } from "../ApiService";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 
-// Mock child components
-jest.mock("../Thermometer", () => ({ temperature }) => (
-  <div data-testid="thermometer">Thermometer: {temperature}</div>
-));
-jest.mock("../HumidityGauge", () => ({ humidity }) => (
-  <div data-testid="humidity-gauge">HumidityGauge: {humidity}</div>
-));
-jest.mock("../LogoutComponent", () => () => (
-  <button data-testid="logout-button">Logout</button>
-));
-jest.mock("../EmailAlerts", () => () => (
-  <div data-testid="email-alerts">EmailAlerts</div>
-));
-jest.mock("../HistoricGraph", () => ({ historyData }) => (
-  <div data-testid="historic-graph">
-    HistoricGraph with {historyData.length} points
-  </div>
-));
+import PresentationView from "../PresentationView";
+import { presentationViewGet } from "../ApiService";
 
-// Mock API functions
 jest.mock("../ApiService", () => ({
-  pullReadingsFunction: jest.fn(),
-  pullHistory: jest.fn(),
+  presentationViewGet: jest.fn(),
 }));
 
-describe("PullReadings component", () => {
+jest.mock("react-router-dom", () => ({
+  ...jest.requireActual("react-router-dom"),
+  useParams: () => ({ id: "123" }),
+}));
+
+window.print = jest.fn();
+
+describe("PresentationView", () => {
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  const mockSensorData = {
-    temperature: 22.5,
-    humidity: 55,
-    inserted_at: new Date().toISOString(),
-  };
-
-  const mockHistoryData = [
-    {
-      received_at: new Date().toISOString(),
-      temperature: 21.0,
-      humidity: 50,
-    },
-    {
-      received_at: new Date().toISOString(),
-      temperature: 23.0,
-      humidity: 60,
-    },
-  ];
-
-  it("renders loading state initially", async () => {
-    pullReadingsFunction.mockResolvedValue({
-      success: true,
-      data: mockSensorData,
-    });
-    pullHistory.mockResolvedValue({ success: true, data: mockHistoryData });
-
-    render(<PullReadings />);
-    expect(screen.getByText(/Loading sensor data/i)).toBeInTheDocument();
-
-    await waitFor(() => {
-      expect(
-        screen.queryByText(/Loading sensor data/i)
-      ).not.toBeInTheDocument();
-    });
-  });
-
-  it("displays sensor data, history table, and graph on success", async () => {
-    pullReadingsFunction.mockResolvedValue({
-      success: true,
-      data: mockSensorData,
-    });
-    pullHistory.mockResolvedValue({ success: true, data: mockHistoryData });
-
-    render(<PullReadings />);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("thermometer")).toBeInTheDocument();
-      expect(screen.getByTestId("humidity-gauge")).toBeInTheDocument();
-      expect(screen.getByTestId("email-alerts")).toBeInTheDocument();
-      expect(screen.getByTestId("historic-graph")).toHaveTextContent(
-        "2 points"
-      );
+  test("shows loading state initially", async () => {
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      contributions: [],
     });
 
-    expect(
-      screen.getByText(
-        (content, element) =>
-          element.tagName.toLowerCase() === "p" && content.includes("22.5")
-      )
-    ).toBeInTheDocument();
-
-    expect(
-      screen.getByText(
-        (content, element) =>
-          element.tagName.toLowerCase() === "p" && content.includes("55")
-      )
-    ).toBeInTheDocument();
-
-    expect(screen.getByRole("table")).toBeInTheDocument();
-  });
-
-  it("shows fallback message when history data is empty", async () => {
-    pullReadingsFunction.mockResolvedValue({
-      success: true,
-      data: mockSensorData,
-    });
-    pullHistory.mockResolvedValue({ success: true, data: [] });
-
-    render(<PullReadings />);
-
-    await waitFor(() => {
-      expect(
-        screen.getByText(/Historic readings will appear here/i)
-      ).toBeInTheDocument();
-    });
-  });
-
-  it("shows error messages when both API calls fail", async () => {
-    pullReadingsFunction.mockResolvedValue({ success: false });
-    pullHistory.mockResolvedValue({ success: false });
-
-    render(<PullReadings />);
-
-    await waitFor(() => {
-      const alerts = screen.getAllByRole("alert");
-      expect(alerts[0]).toHaveTextContent("Failed to load sensor data");
-      expect(alerts[1]).toHaveTextContent("Failed to load historic readings");
-    });
-  });
-
-  it("handles partial failure: sensor success, history failure", async () => {
-    pullReadingsFunction.mockResolvedValue({
-      success: true,
-      data: mockSensorData,
-    });
-    pullHistory.mockResolvedValue({ success: false });
-
-    render(<PullReadings />);
-
-    await waitFor(() => {
-      expect(screen.getByTestId("thermometer")).toBeInTheDocument();
-      expect(screen.getByTestId("humidity-gauge")).toBeInTheDocument();
-      expect(
-        screen.getByText("Failed to load historic readings")
-      ).toBeInTheDocument();
-    });
-  });
-
-  it("disables Refresh button while loading", async () => {
-    let resolveFetch;
-    pullReadingsFunction.mockImplementation(
-      () => new Promise((resolve) => (resolveFetch = resolve))
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
     );
-    pullHistory.mockResolvedValue({ success: true, data: mockHistoryData });
 
-    render(<PullReadings />);
-    const refreshButton = screen.getByRole("button", { name: /Refresh/i });
-    expect(refreshButton).toBeDisabled();
+    expect(screen.getByText(/Loading presentation/i)).toBeInTheDocument();
 
-    resolveFetch({ success: true, data: mockSensorData });
-    await waitFor(() => expect(refreshButton).not.toBeDisabled());
+    await waitFor(() => expect(presentationViewGet).toHaveBeenCalled());
   });
 
-  it("refreshes data when Refresh button is clicked", async () => {
-    pullReadingsFunction.mockResolvedValue({
-      success: true,
-      data: mockSensorData,
-    });
-    pullHistory.mockResolvedValue({ success: true, data: mockHistoryData });
+  test("shows error message when API fails", async () => {
+    presentationViewGet.mockRejectedValueOnce(new Error("Server error"));
 
-    render(<PullReadings />);
-    await waitFor(() => screen.getByRole("button", { name: /Refresh/i }));
-
-    fireEvent.click(screen.getByRole("button", { name: /Refresh/i }));
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
 
     await waitFor(() => {
-      expect(pullReadingsFunction).toHaveBeenCalledTimes(2);
-      expect(pullHistory).toHaveBeenCalledTimes(2);
+      expect(screen.getByText(/Server error/i)).toBeInTheDocument();
     });
+  });
+
+  test("renders presentation header and contributions", async () => {
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      name: "Alec",
+      contributions: [
+        {
+          id: 1,
+          title: "Contribution A",
+          contribution_date: "2024-01-01",
+          created_at: "2024-02-01",
+          categories: ["Leadership"],
+          what_happened: "Something happened",
+          why_it_mattered: "It mattered",
+          outcome_impact: "Big impact",
+          evidence_links: [],
+          files: [],
+        },
+      ],
+    });
+
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText(/Professional Contribution Summary - Alec/i),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Contribution A")).toBeInTheDocument();
+    expect(screen.getByText("Something happened")).toBeInTheDocument();
+    expect(screen.getByText("It mattered")).toBeInTheDocument();
+    expect(screen.getByText("Big impact")).toBeInTheDocument();
+    expect(screen.getByText("Leadership")).toBeInTheDocument();
+  });
+
+  test("renders evidence links", async () => {
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      contributions: [
+        {
+          id: 1,
+          title: "Contribution with link",
+          contribution_date: "2024-01-01",
+          created_at: "2024-02-01",
+          categories: [],
+          what_happened: "",
+          why_it_mattered: "",
+          outcome_impact: "",
+          evidence_links: [
+            { url: "https://example.com/doc1" },
+            { url: "https://example.com/doc2" },
+          ],
+          files: [],
+        },
+      ],
+    });
+
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("https://example.com/doc1")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("https://example.com/doc2")).toBeInTheDocument();
+  });
+
+  test("clicking supporting file triggers downloadFile", async () => {
+    const mockFile = {
+      file_name: "evidence.pdf",
+      file_data: btoa("dummy content"),
+      mime_type: "application/pdf",
+    };
+
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      contributions: [
+        {
+          id: 1,
+          title: "Contribution with file",
+          contribution_date: "2024-01-01",
+          created_at: "2024-02-01",
+          categories: [],
+          what_happened: "",
+          why_it_mattered: "",
+          outcome_impact: "",
+          evidence_links: [],
+          files: [mockFile],
+        },
+      ],
+    });
+
+    const createObjectURL = jest.fn(() => "blob:mock-url");
+    const revokeObjectURL = jest.fn();
+
+    global.URL.createObjectURL = createObjectURL;
+    global.URL.revokeObjectURL = revokeObjectURL;
+
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(screen.getByText("Contribution with file")).toBeInTheDocument();
+    });
+
+    fireEvent.click(screen.getByText("evidence.pdf"));
+
+    expect(createObjectURL).toHaveBeenCalled();
+
+    await waitFor(() => {
+      expect(revokeObjectURL).toHaveBeenCalled();
+    });
+  });
+
+  test("renders current role and company", async () => {
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      contributions: [
+        {
+          id: 1,
+          title: "Contribution with role/company",
+          contribution_date: "2024-01-01",
+          created_at: "2024-02-01",
+          categories: [],
+          what_happened: "",
+          why_it_mattered: "",
+          outcome_impact: "",
+          evidence_links: [],
+          files: [],
+          current_role: "Senior Developer",
+          current_company: "HSBC Bank",
+        },
+      ],
+    });
+
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Contribution with role/company"),
+      ).toBeInTheDocument();
+    });
+
+    expect(screen.getByText(/Current role:/i)).toBeInTheDocument();
+    expect(screen.getByText("Senior Developer")).toBeInTheDocument();
+
+    expect(screen.getByText(/Current company:/i)).toBeInTheDocument();
+    expect(screen.getByText("HSBC Bank")).toBeInTheDocument();
+  });
+
+  test("clicking print button triggers window.print()", async () => {
+    presentationViewGet.mockResolvedValueOnce({
+      status: "success",
+      contributions: [],
+    });
+
+    render(
+      <MemoryRouter>
+        <PresentationView />
+      </MemoryRouter>,
+    );
+
+    await waitFor(() => expect(presentationViewGet).toHaveBeenCalled());
+
+    fireEvent.click(
+      screen.getByRole("button", {
+        name: /Print Presentation/i,
+      }),
+    );
+
+    expect(window.print).toHaveBeenCalled();
   });
 });

@@ -1,120 +1,67 @@
 import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
-import { useNavigate } from "react-router-dom";
-import UserLogin from "../UserLogin";
+import TimelineFilter from "../TimelineFilter";
 
-jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn(),
-}));
+describe("TimelineFilter", () => {
+  test("updates start date via setFilters", () => {
+    const mockSetFilters = jest.fn();
+    const filters = { startDate: "", endDate: "" };
 
-describe("UserLogin", () => {
-  let navigateMock;
-
-  beforeEach(() => {
-    navigateMock = jest.fn();
-    useNavigate.mockReturnValue(navigateMock);
-
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            status: "success",
-            registration_status: "Registration data is not complete",
-          }),
-      })
-    );
-  });
-
-  afterEach(() => {
-    jest.clearAllMocks();
-  });
-
-  it("renders the login form", () => {
-    render(<UserLogin />);
-
-    expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
-    expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
-    expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
-  });
-
-  it("updates form data when input values change", () => {
-    render(<UserLogin />);
-
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-
-    expect(emailInput.value).toBe("john@example.com");
-    expect(passwordInput.value).toBe("password123");
-  });
-
-  it("submits the form and navigates to AccountPage on success", async () => {
-    render(<UserLogin />);
-
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
-
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      "http://localhost:8001/Readings_From_Sensors/login_capture.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: "john@example.com",
-          password: "password123",
-        }),
-      }
+    render(
+      <TimelineFilter
+        filters={filters}
+        setFilters={mockSetFilters}
+        onClear={jest.fn()}
+      />
     );
 
-    expect(navigateMock).toHaveBeenCalledWith("/PullReadings");
+    // Select by name attribute (most reliable for <input type="date">)
+    const startInput = screen.getByRole("textbox", { hidden: true }) || 
+                       screen.getByDisplayValue("", { exact: false }) ||
+                       screen.getByTestId("startDate");
+
+    // But the simplest and most reliable:
+    const start = document.querySelector('input[name="startDate"]');
+
+    fireEvent.change(start, { target: { value: "2024-01-01" } });
+
+    expect(mockSetFilters).toHaveBeenCalledTimes(1);
+    expect(mockSetFilters).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it("displays an error message when login fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ status: "failure" }),
-      })
+  test("updates end date via setFilters", () => {
+    const mockSetFilters = jest.fn();
+    const filters = { startDate: "", endDate: "" };
+
+    render(
+      <TimelineFilter
+        filters={filters}
+        setFilters={mockSetFilters}
+        onClear={jest.fn()}
+      />
     );
 
-    render(<UserLogin />);
+    const end = document.querySelector('input[name="endDate"]');
 
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    fireEvent.change(end, { target: { value: "2024-12-31" } });
 
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 30));
-    expect(
-      screen.getByText("Sign in failed. Please try again.")
-    ).toBeInTheDocument();
+    expect(mockSetFilters).toHaveBeenCalledTimes(1);
+    expect(mockSetFilters).toHaveBeenCalledWith(expect.any(Function));
   });
 
-  it("displays an error message when fetch fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.reject(new Error("Network error"))
+  test("calls onClear when 'Clear all filters' is clicked", () => {
+    const mockOnClear = jest.fn();
+
+    render(
+      <TimelineFilter
+        filters={{ startDate: "", endDate: "" }}
+        setFilters={jest.fn()}
+        onClear={mockOnClear}
+      />
     );
 
-    render(<UserLogin />);
+    fireEvent.click(screen.getByRole("button", { name: /Clear all filters/i }));
 
-    const submitButton = screen.getByRole("button", { name: /login/i });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(screen.getByText("An error occurred.")).toBeInTheDocument();
+    expect(mockOnClear).toHaveBeenCalledTimes(1);
   });
 });

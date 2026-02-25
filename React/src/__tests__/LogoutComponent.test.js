@@ -1,8 +1,9 @@
 import React from "react";
 import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
+
 import LogoutComponent from "../LogoutComponent";
 import { logoutUser } from "../ApiService";
-import { useNavigate } from "react-router-dom";
 
 jest.mock("../ApiService", () => ({
   logoutUser: jest.fn(),
@@ -19,35 +20,44 @@ describe("LogoutComponent", () => {
     jest.clearAllMocks();
   });
 
-  it("renders the logout button", () => {
-    render(<LogoutComponent />);
-    expect(screen.getByRole("button", { name: /logout/i })).toBeInTheDocument();
-  });
+  test("calls logoutUser and navigates to home on success", async () => {
+    logoutUser.mockResolvedValueOnce({});
 
-  it("calls logoutUser and navigates to '/' on successful logout", async () => {
-    logoutUser.mockResolvedValueOnce();
+    render(
+      <MemoryRouter>
+        <LogoutComponent />
+      </MemoryRouter>,
+    );
 
-    render(<LogoutComponent />);
     fireEvent.click(screen.getByRole("button", { name: /logout/i }));
 
     await waitFor(() => {
       expect(logoutUser).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
+
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  it("logs error message on logout failure", async () => {
-    const consoleSpy = jest.spyOn(console, "error").mockImplementation(() => {});
+  test("logs error and does not navigate on failure", async () => {
+    const consoleSpy = jest
+      .spyOn(console, "error")
+      .mockImplementation(() => {});
     logoutUser.mockRejectedValueOnce(new Error("Logout failed"));
 
-    render(<LogoutComponent />);
+    render(
+      <MemoryRouter>
+        <LogoutComponent />
+      </MemoryRouter>,
+    );
+
     fireEvent.click(screen.getByRole("button", { name: /logout/i }));
 
     await waitFor(() => {
       expect(logoutUser).toHaveBeenCalledTimes(1);
-      expect(mockNavigate).not.toHaveBeenCalled();
-      expect(consoleSpy).toHaveBeenCalledWith("Logout failed");
     });
+
+    expect(mockNavigate).not.toHaveBeenCalled();
+    expect(consoleSpy).toHaveBeenCalledWith("Logout failed");
 
     consoleSpy.mockRestore();
   });
