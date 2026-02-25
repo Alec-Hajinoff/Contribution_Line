@@ -1,334 +1,234 @@
-import {
-  registerUser,
-  loginUser,
-  pullReadingsFunction,
-  logoutUser,
-  pullHistory,
-} from "../ApiService";
+import React from "react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 
-import {
-  setAlertThresholds,
-  getAlertThresholds,
-  deleteAlertThresholds,
-} from "../ApiService";
+import AddContribution from "../AddContribution";
+import { addContribution } from "../ApiService";
 
-global.fetch = jest.fn();
+jest.mock("../ApiService", () => ({
+  addContribution: jest.fn(),
+}));
 
-beforeEach(() => {
-  fetch.mockClear();
+beforeAll(() => {
+  jest.spyOn(window, "alert").mockImplementation(() => {});
 });
 
-describe("API functions", () => {
-  describe("registerUser", () => {
-    it("should successfully register a user", async () => {
-      const mockResponse = { success: true, message: "User registered" };
-      fetch.mockResolvedValueOnce({
-        json: () => Promise.resolve(mockResponse),
-      });
+afterEach(() => {
+  jest.clearAllMocks();
+});
 
-      const formData = { username: "test", password: "test123" };
-      const result = await registerUser(formData);
+function fillRequiredFields() {
+  fireEvent.change(screen.getByLabelText(/Contribution title/i), {
+    target: { value: "My Contribution" },
+  });
 
-      expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:8001/Readings_From_Sensors/form_capture.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-          credentials: "include",
-        }
-      );
-      expect(result).toEqual(mockResponse);
-    });
+  fireEvent.change(screen.getByLabelText(/What happened/i), {
+    target: { value: "Something happened" },
+  });
 
-    it("should handle registration errors", async () => {
-      fetch.mockRejectedValueOnce(new Error("Network error"));
+  fireEvent.change(screen.getByLabelText(/Why it mattered/i), {
+    target: { value: "It mattered" },
+  });
 
-      const formData = { username: "test", password: "test123" };
-      await expect(registerUser(formData)).rejects.toThrow(
-        "An error occurred."
+  fireEvent.change(screen.getByLabelText(/Outcome \/ impact/i), {
+    target: { value: "Big impact" },
+  });
+
+  fireEvent.change(screen.getByLabelText(/Contribution date/i), {
+    target: { value: "2024-01-01" },
+  });
+
+  fireEvent.change(screen.getByLabelText(/Current role/i), {
+    target: { value: "Senior Developer" },
+  });
+
+  fireEvent.change(screen.getByLabelText(/Current company/i), {
+    target: { value: "HSBC Bank" },
+  });
+}
+
+describe("AddContribution", () => {
+  test("renders all required fields", () => {
+    render(<AddContribution />);
+
+    expect(screen.getByText(/Add a contribution/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Contribution title/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/What happened/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Why it mattered/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Outcome \/ impact/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Contribution date/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Current role/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Current company/i)).toBeInTheDocument();
+  });
+
+  test("requires at least one category", async () => {
+    render(<AddContribution />);
+
+    fillRequiredFields();
+
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith(
+        "Please select at least one category."
       );
     });
   });
 
-  describe("loginUser", () => {
-    it("should successfully login a user", async () => {
-      const mockResponse = { success: true, message: "Login successful" };
-      fetch.mockResolvedValueOnce({
-        json: () => Promise.resolve(mockResponse),
-      });
+  test("requires current role", async () => {
+    render(<AddContribution />);
 
-      const formData = { username: "test", password: "test123" };
-      const result = await loginUser(formData);
-
-      expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:8001/Readings_From_Sensors/login_capture.php",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include",
-          body: JSON.stringify(formData),
-        }
-      );
-      expect(result).toEqual(mockResponse);
+    fillRequiredFields();
+    fireEvent.change(screen.getByLabelText(/Current role/i), {
+      target: { value: "" },
     });
 
-    it("should handle login errors", async () => {
-      fetch.mockRejectedValueOnce(new Error("Network error"));
+    fireEvent.click(screen.getByLabelText(/Leadership \/ Ownership/i));
 
-      const formData = { username: "test", password: "test123" };
-      await expect(loginUser(formData)).rejects.toThrow("An error occurred.");
-    });
-  });
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
 
-  describe("pullReadingsFunction", () => {
-    it("should successfully fetch sensor readings", async () => {
-      const mockData = { readings: [] };
-      fetch.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockData),
-      });
-
-      const result = await pullReadingsFunction();
-
-      expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:8001/Readings_From_Sensors/pull_readings.php",
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      expect(result).toEqual(mockData);
-    });
-
-    it("should handle failed requests", async () => {
-      fetch.mockResolvedValueOnce({ ok: false });
-
-      await expect(pullReadingsFunction()).rejects.toThrow("Request failed");
-    });
-
-    it("should handle network errors", async () => {
-      fetch.mockRejectedValueOnce(new Error("Network error"));
-
-      await expect(pullReadingsFunction()).rejects.toThrow(
-        "Failed to fetch agreement: Network error"
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith(
+        "Please enter your current role."
       );
     });
   });
 
-  describe("logoutUser", () => {
-    it("should successfully logout a user", async () => {
-      fetch.mockResolvedValueOnce({ ok: true });
+  test("requires current company", async () => {
+    render(<AddContribution />);
 
-      await logoutUser();
-
-      expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:8001/Readings_From_Sensors/logout_component.php",
-        {
-          method: "POST",
-          credentials: "include",
-        }
-      );
+    fillRequiredFields();
+    fireEvent.change(screen.getByLabelText(/Current company/i), {
+      target: { value: "" },
     });
 
-    it("should handle logout failures", async () => {
-      fetch.mockResolvedValueOnce({ ok: false });
+    fireEvent.click(screen.getByLabelText(/Leadership \/ Ownership/i));
 
-      await expect(logoutUser()).rejects.toThrow(
-        "An error occurred during logout."
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() => {
+      expect(window.alert).toHaveBeenCalledWith(
+        "Please enter your current company."
       );
     });
   });
 
-  describe("pullHistory", () => {
-    it("should successfully fetch history", async () => {
-      const mockPayload = {
-        success: true,
-        message: "History fetched successfully",
-        data: [],
-      };
-      fetch.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockPayload),
-      });
+  test("rejects files over 10MB", async () => {
+    render(<AddContribution />);
 
-      const result = await pullHistory();
+    const fileInput = screen.getByLabelText(/Supporting file/i);
 
-      expect(fetch).toHaveBeenCalledWith(
-        "http://localhost:8001/Readings_From_Sensors/pull_history.php",
-        {
-          method: "GET",
-          credentials: "include",
-        }
-      );
-      expect(result).toEqual(mockPayload);
+    const bigFile = new File(["x".repeat(11 * 1024 * 1024)], "big.pdf", {
+      type: "application/pdf",
     });
 
-    it("should handle failed history requests", async () => {
-      const mockPayload = {
-        success: false,
-        message: "Error fetching history",
-      };
-      fetch.mockResolvedValueOnce({
-        ok: true,
-        json: () => Promise.resolve(mockPayload),
-      });
+    fireEvent.change(fileInput, { target: { files: [bigFile] } });
 
-      const result = await pullHistory();
-
-      expect(result).toEqual({
-        success: false,
-        message: "Error fetching history",
-        data: [],
-      });
-    });
-
-    it("should handle network errors", async () => {
-      fetch.mockRejectedValueOnce(new Error("Network error"));
-
-      const result = await pullHistory();
-
-      expect(result).toEqual({
-        success: false,
-        message: "Network error",
-        data: [],
-      });
-    });
+    expect(window.alert).toHaveBeenCalledWith(
+      "File size exceeds 10MB limit."
+    );
+    expect(fileInput.value).toBe("");
   });
 
-  describe("Alert threshold API functions", () => {
-    describe("setAlertThresholds", () => {
-      it("should successfully set alert thresholds", async () => {
-        const mockResponse = { success: true, message: "Thresholds saved" };
-        fetch.mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        });
+  test("rejects invalid file types", async () => {
+    render(<AddContribution />);
 
-        const thresholdData = {
-          maxTemp: "30",
-          minTemp: "5",
-          maxHumidity: "80",
-          minHumidity: "20",
-        };
+    const fileInput = screen.getByLabelText(/Supporting file/i);
 
-        const result = await setAlertThresholds(thresholdData);
-
-        expect(fetch).toHaveBeenCalledWith(
-          "http://localhost:8001/Readings_From_Sensors/set_alerts.php",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            credentials: "include",
-            body: JSON.stringify(thresholdData),
-          }
-        );
-        expect(result).toEqual(mockResponse);
-      });
-
-      it("should handle setAlertThresholds failure", async () => {
-        fetch.mockResolvedValueOnce({ ok: false });
-
-        await expect(setAlertThresholds({ maxTemp: "30" })).rejects.toThrow(
-          "Failed to set alert thresholds"
-        );
-      });
-
-      it("should handle network error during setAlertThresholds", async () => {
-        fetch.mockRejectedValueOnce(new Error("Network error"));
-
-        await expect(setAlertThresholds({ maxTemp: "30" })).rejects.toThrow(
-          "Failed to set alert thresholds"
-        );
-      });
+    const badFile = new File(["hello"], "file.exe", {
+      type: "application/x-msdownload",
     });
 
-    describe("getAlertThresholds", () => {
-      it("should successfully fetch alert thresholds", async () => {
-        const mockData = {
-          success: true,
-          data: {
-            maxTemp: "30",
-            minTemp: "5",
-            maxHumidity: "80",
-            minHumidity: "20",
-          },
-        };
-        fetch.mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(mockData),
-        });
+    fireEvent.change(fileInput, { target: { files: [badFile] } });
 
-        const result = await getAlertThresholds();
+    expect(window.alert).toHaveBeenCalledWith(
+      "Only PDF, JPG, and PNG files are allowed."
+    );
+    expect(fileInput.value).toBe("");
+  });
 
-        expect(fetch).toHaveBeenCalledWith(
-          "http://localhost:8001/Readings_From_Sensors/get_alerts.php",
-          {
-            method: "GET",
-            credentials: "include",
-          }
-        );
-        expect(result).toEqual(mockData);
-      });
+  test("submits form successfully and resets fields", async () => {
+    addContribution.mockResolvedValueOnce({});
 
-      it("should handle getAlertThresholds failure", async () => {
-        fetch.mockResolvedValueOnce({ ok: false });
+    const onContributionAdded = jest.fn();
 
-        await expect(getAlertThresholds()).rejects.toThrow(
-          "Failed to fetch alert thresholds"
-        );
-      });
+    render(<AddContribution onContributionAdded={onContributionAdded} />);
 
-      it("should handle network error during getAlertThresholds", async () => {
-        fetch.mockRejectedValueOnce(new Error("Network error"));
+    fillRequiredFields();
 
-        await expect(getAlertThresholds()).rejects.toThrow(
-          "Failed to fetch alert thresholds"
-        );
-      });
+    fireEvent.click(screen.getByLabelText(/Leadership \/ Ownership/i));
+
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    expect(screen.getByText(/Saving/i)).toBeInTheDocument();
+
+    await waitFor(() => {
+      expect(addContribution).toHaveBeenCalledTimes(1);
     });
 
-    describe("deleteAlertThresholds", () => {
-      it("should successfully delete alert thresholds", async () => {
-        const mockResponse = { success: true, message: "Thresholds deleted" };
-        fetch.mockResolvedValueOnce({
-          ok: true,
-          json: () => Promise.resolve(mockResponse),
-        });
+    expect(screen.getByText(/Saved successfully/i)).toBeInTheDocument();
+    expect(onContributionAdded).toHaveBeenCalled();
 
-        const result = await deleteAlertThresholds();
+    expect(screen.getByLabelText(/Contribution title/i).value).toBe("");
+    expect(screen.getByLabelText(/Current role/i).value).toBe("");
+    expect(screen.getByLabelText(/Current company/i).value).toBe("");
 
-        expect(fetch).toHaveBeenCalledWith(
-          "http://localhost:8001/Readings_From_Sensors/delete_alerts.php",
-          {
-            method: "DELETE",
-            credentials: "include",
-          }
-        );
-        expect(result).toEqual(mockResponse);
-      });
+    await waitFor(
+      () => {
+        expect(
+          screen.queryByText(/Saved successfully/i)
+        ).not.toBeInTheDocument();
+      },
+      { timeout: 2500 }
+    );
+  });
 
-      it("should handle deleteAlertThresholds failure", async () => {
-        fetch.mockResolvedValueOnce({ ok: false });
+  test("handles API error", async () => {
+    addContribution.mockRejectedValueOnce(new Error("Server error"));
 
-        await expect(deleteAlertThresholds()).rejects.toThrow(
-          "Failed to delete alert thresholds"
-        );
-      });
+    render(<AddContribution />);
 
-      it("should handle network error during deleteAlertThresholds", async () => {
-        fetch.mockRejectedValueOnce(new Error("Network error"));
+    fillRequiredFields();
+    fireEvent.click(screen.getByLabelText(/Leadership \/ Ownership/i));
 
-        await expect(deleteAlertThresholds()).rejects.toThrow(
-          "Failed to delete alert thresholds"
-        );
-      });
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() => {
+      expect(addContribution).toHaveBeenCalled();
     });
+
+    expect(screen.getByText(/Error saving/i)).toBeInTheDocument();
+  });
+
+  test("sends correct FormData payload", async () => {
+    addContribution.mockResolvedValueOnce({});
+
+    render(<AddContribution />);
+
+    fillRequiredFields();
+
+    fireEvent.click(screen.getByLabelText(/Leadership \/ Ownership/i));
+
+    fireEvent.change(screen.getByLabelText(/Evidence link/i), {
+      target: { value: "https://example.com" },
+    });
+
+    fireEvent.click(screen.getByRole("button", { name: /save/i }));
+
+    await waitFor(() => expect(addContribution).toHaveBeenCalled());
+
+    const formDataArg = addContribution.mock.calls[0][0];
+    expect(formDataArg instanceof FormData).toBe(true);
+
+    expect(formDataArg.get("title")).toBe("My Contribution");
+    expect(formDataArg.get("what_happened")).toBe("Something happened");
+    expect(formDataArg.get("why_it_mattered")).toBe("It mattered");
+    expect(formDataArg.get("outcome_impact")).toBe("Big impact");
+    expect(formDataArg.get("contribution_date")).toBe("2024-01-01");
+    expect(formDataArg.get("current_role")).toBe("Senior Developer");
+    expect(formDataArg.get("current_company")).toBe("HSBC Bank");
+    expect(formDataArg.get("evidence_link")).toBe("https://example.com");
+
+    const categories = formDataArg.getAll("categories[]");
+    expect(categories).toEqual(["Leadership / Ownership"]);
   });
 });
