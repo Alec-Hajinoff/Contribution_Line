@@ -157,8 +157,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-2">
-            <label className="form-label">Contribution title</label>
+            <label className="form-label" htmlFor="title">
+              Contribution title
+            </label>
             <input
+              id="title"
               type="text"
               name="title"
               className="form-control"
@@ -169,8 +172,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-2">
-            <label className="form-label">What happened?</label>
+            <label className="form-label" htmlFor="what_happened">
+              What happened?
+            </label>
             <textarea
+              id="what_happened"
               name="what_happened"
               className="form-control"
               value={form.what_happened}
@@ -181,8 +187,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-2">
-            <label className="form-label">Why it mattered?</label>
+            <label className="form-label" htmlFor="why_it_mattered">
+              Why it mattered?
+            </label>
             <textarea
+              id="why_it_mattered"
               name="why_it_mattered"
               className="form-control"
               value={form.why_it_mattered}
@@ -193,8 +202,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-2">
-            <label className="form-label">Outcome / impact</label>
+            <label className="form-label" htmlFor="outcome_impact">
+              Outcome / impact
+            </label>
             <textarea
+              id="outcome_impact"
               name="outcome_impact"
               className="form-control"
               value={form.outcome_impact}
@@ -233,8 +245,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Evidence link (URL)</label>
+            <label className="form-label" htmlFor="evidence_link">
+              Evidence link (URL)
+            </label>
             <input
+              id="evidence_link"
               type="url"
               name="evidence_link"
               placeholder="https://..."
@@ -245,10 +260,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">
+            <label className="form-label" htmlFor="supporting_file">
               Supporting file (PDF, JPG, PNG - Max 10MB)
             </label>
             <input
+              id="supporting_file"
               type="file"
               ref={fileInputRef}
               className="form-control"
@@ -258,8 +274,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Contribution date</label>
+            <label className="form-label" htmlFor="contribution_date">
+              Contribution date
+            </label>
             <input
+              id="contribution_date"
               type="date"
               name="contribution_date"
               className="form-control"
@@ -270,8 +289,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Current role</label>
+            <label className="form-label" htmlFor="current_role">
+              Current role
+            </label>
             <input
+              id="current_role"
               type="text"
               name="current_role"
               className="form-control"
@@ -283,8 +305,11 @@ function AddContribution({ onContributionAdded }) {
           </div>
 
           <div className="mb-3">
-            <label className="form-label">Current company</label>
+            <label className="form-label" htmlFor="current_company">
+              Current company
+            </label>
             <input
+              id="current_company"
               type="text"
               name="current_company"
               className="form-control"

@@ -69,7 +69,7 @@ describe("AddContribution", () => {
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "Please select at least one category."
+        "Please select at least one category.",
       );
     });
   });
@@ -88,7 +88,7 @@ describe("AddContribution", () => {
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "Please enter your current role."
+        "Please enter your current role.",
       );
     });
   });
@@ -107,7 +107,7 @@ describe("AddContribution", () => {
 
     await waitFor(() => {
       expect(window.alert).toHaveBeenCalledWith(
-        "Please enter your current company."
+        "Please enter your current company.",
       );
     });
   });
@@ -123,9 +123,7 @@ describe("AddContribution", () => {
 
     fireEvent.change(fileInput, { target: { files: [bigFile] } });
 
-    expect(window.alert).toHaveBeenCalledWith(
-      "File size exceeds 10MB limit."
-    );
+    expect(window.alert).toHaveBeenCalledWith("File size exceeds 10MB limit.");
     expect(fileInput.value).toBe("");
   });
 
@@ -141,7 +139,7 @@ describe("AddContribution", () => {
     fireEvent.change(fileInput, { target: { files: [badFile] } });
 
     expect(window.alert).toHaveBeenCalledWith(
-      "Only PDF, JPG, and PNG files are allowed."
+      "Only PDF, JPG, and PNG files are allowed.",
     );
     expect(fileInput.value).toBe("");
   });
@@ -175,10 +173,10 @@ describe("AddContribution", () => {
     await waitFor(
       () => {
         expect(
-          screen.queryByText(/Saved successfully/i)
+          screen.queryByText(/Saved successfully/i),
         ).not.toBeInTheDocument();
       },
-      { timeout: 2500 }
+      { timeout: 2500 },
     );
   });
 
