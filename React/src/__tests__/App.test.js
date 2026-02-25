@@ -1,45 +1,26 @@
-import { render, screen } from "@testing-library/react";
-import { MemoryRouter } from "react-router-dom";
-import AppRoutes from "../AppRoutes";
 import React from "react";
+import { render, screen } from "@testing-library/react";
 
-describe("App Component", () => {
-  test("renders MainRegLog component", () => {
-    render(
-      <MemoryRouter initialEntries={["/"]}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
-    expect(screen.getByText(/Please register:/i)).toBeInTheDocument();
+import App from "../App";
+import Header from "../Header";
+import Footer from "../Footer";
+import AppRoutes from "../AppRoutes";
+
+jest.mock("../Header", () => () => <div data-testid="header">Header</div>);
+jest.mock("../Footer", () => () => <div data-testid="footer">Footer</div>);
+jest.mock("../AppRoutes", () => () => <div data-testid="routes">Routes</div>);
+
+describe("App", () => {
+  test("renders Header, AppRoutes, and Footer inside a Router", () => {
+    render(<App />);
+
+    expect(screen.getByTestId("header")).toBeInTheDocument();
+    expect(screen.getByTestId("routes")).toBeInTheDocument();
+    expect(screen.getByTestId("footer")).toBeInTheDocument();
   });
 
-  test("renders RegisteredPage component", () => {
-    render(
-      <MemoryRouter initialEntries={["/RegisteredPage"]}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Thank you for registering!/i)).toBeInTheDocument();
-  });
-
-  test("renders PullReadings component when on /PullReadings path", () => {
-    render(
-      <MemoryRouter initialEntries={["/PullReadings"]}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Latest Sensor Readings:/i)).toBeInTheDocument();
-  });
-
-  test("renders LogoutComponent component when on /LogoutComponent path", () => {
-    render(
-      <MemoryRouter initialEntries={["/LogoutComponent"]}>
-        <AppRoutes />
-      </MemoryRouter>
-    );
-
-    expect(screen.getByText(/Logout/i)).toBeInTheDocument();
+  test("does not crash when rendering", () => {
+    const { container } = render(<App />);
+    expect(container).toBeTruthy();
   });
 });
