@@ -17,7 +17,7 @@ describe("UserRegistration", () => {
     global.fetch = jest.fn(() =>
       Promise.resolve({
         json: () => Promise.resolve({ success: true }),
-      })
+      }),
     );
   });
 
@@ -31,12 +31,10 @@ describe("UserRegistration", () => {
     expect(screen.getByPlaceholderText("Your full name")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
     expect(
-      screen.getByPlaceholderText(
-        "Choose a strong password (minimum 8 characters)"
-      )
+      screen.getByPlaceholderText("Choose a strong password"),
     ).toBeInTheDocument();
     expect(
-      screen.getByRole("button", { name: /register/i })
+      screen.getByRole("button", { name: /register/i }),
     ).toBeInTheDocument();
   });
 
@@ -46,7 +44,7 @@ describe("UserRegistration", () => {
     const firstNameInput = screen.getByPlaceholderText("Your full name");
     const emailInput = screen.getByPlaceholderText("Email address");
     const passwordInput = screen.getByPlaceholderText(
-      "Choose a strong password (minimum 8 characters)"
+      "Choose a strong password",
     );
 
     fireEvent.change(firstNameInput, { target: { value: "John" } });
@@ -64,7 +62,7 @@ describe("UserRegistration", () => {
     const firstNameInput = screen.getByPlaceholderText("Your full name");
     const emailInput = screen.getByPlaceholderText("Email address");
     const passwordInput = screen.getByPlaceholderText(
-      "Choose a strong password (minimum 8 characters)"
+      "Choose a strong password",
     );
     const submitButton = screen.getByRole("button", { name: /register/i });
 
@@ -76,7 +74,7 @@ describe("UserRegistration", () => {
     await new Promise((resolve) => setTimeout(resolve, 100));
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "http://localhost:8001/Readings_From_Sensors/form_capture.php",
+      "http://localhost:8001/Contribution_Line/form_capture.php",
       {
         method: "POST",
         headers: {
@@ -88,7 +86,7 @@ describe("UserRegistration", () => {
           password: "password123",
         }),
         credentials: "include",
-      }
+      },
     );
 
     expect(navigateMock).toHaveBeenCalledWith("/RegisteredPage");
@@ -98,7 +96,7 @@ describe("UserRegistration", () => {
     global.fetch.mockImplementationOnce(() =>
       Promise.resolve({
         json: () => Promise.resolve({ success: false }),
-      })
+      }),
     );
 
     render(<UserRegistration />);
@@ -106,7 +104,7 @@ describe("UserRegistration", () => {
     const firstNameInput = screen.getByPlaceholderText("Your full name");
     const emailInput = screen.getByPlaceholderText("Email address");
     const passwordInput = screen.getByPlaceholderText(
-      "Choose a strong password (minimum 8 characters)"
+      "Choose a strong password",
     );
     const submitButton = screen.getByRole("button", { name: /register/i });
 
@@ -117,13 +115,13 @@ describe("UserRegistration", () => {
 
     await new Promise((resolve) => setTimeout(resolve, 100));
     expect(
-      screen.getByText("Registration failed. Please try again.")
+      screen.getByText("Registration failed. Please try again."),
     ).toBeInTheDocument();
   });
 
   it("displays an error message when fetch fails", async () => {
     global.fetch.mockImplementationOnce(() =>
-      Promise.reject(new Error("Network error"))
+      Promise.reject(new Error("Network error")),
     );
 
     render(<UserRegistration />);
@@ -133,7 +131,7 @@ describe("UserRegistration", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByText("Password must be at least 8 characters long")
+        screen.getByText("Password must be at least 8 characters long"),
       ).toBeInTheDocument();
     });
   });

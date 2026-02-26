@@ -21,7 +21,7 @@ describe("UserLogin", () => {
             status: "success",
             registration_status: "Registration data is not complete",
           }),
-      })
+      }),
     );
   });
 
@@ -64,7 +64,7 @@ describe("UserLogin", () => {
     await new Promise((resolve) => setTimeout(resolve, 50));
 
     expect(global.fetch).toHaveBeenCalledWith(
-      "http://localhost:8001/Readings_From_Sensors/login_capture.php",
+      "http://localhost:8001/Contribution_Line/login_capture.php",
       {
         method: "POST",
         headers: {
@@ -75,17 +75,17 @@ describe("UserLogin", () => {
           email: "john@example.com",
           password: "password123",
         }),
-      }
+      },
     );
 
-    expect(navigateMock).toHaveBeenCalledWith("/PullReadings");
+    expect(navigateMock).toHaveBeenCalledWith("/UserDashboard");
   });
 
   it("displays an error message when login fails", async () => {
     global.fetch.mockImplementationOnce(() =>
       Promise.resolve({
         json: () => Promise.resolve({ status: "failure" }),
-      })
+      }),
     );
 
     render(<UserLogin />);
@@ -100,13 +100,13 @@ describe("UserLogin", () => {
 
     await new Promise((resolve) => setTimeout(resolve, 30));
     expect(
-      screen.getByText("Sign in failed. Please try again.")
+      screen.getByText("Sign in failed. Please try again."),
     ).toBeInTheDocument();
   });
 
   it("displays an error message when fetch fails", async () => {
     global.fetch.mockImplementationOnce(() =>
-      Promise.reject(new Error("Network error"))
+      Promise.reject(new Error("Network error")),
     );
 
     render(<UserLogin />);
