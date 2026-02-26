@@ -163,7 +163,7 @@ describe("AddContribution", () => {
       expect(addContribution).toHaveBeenCalledTimes(1);
     });
 
-    expect(screen.getByText(/Saved successfully/i)).toBeInTheDocument();
+    expect(screen.getByText(/Saved successfully./i)).toBeInTheDocument();
     expect(onContributionAdded).toHaveBeenCalled();
 
     expect(screen.getByLabelText(/Contribution title/i).value).toBe("");
@@ -194,7 +194,9 @@ describe("AddContribution", () => {
       expect(addContribution).toHaveBeenCalled();
     });
 
-    expect(screen.getByText(/Error saving/i)).toBeInTheDocument();
+    await waitFor(() => {
+      expect(screen.getByText(/Error saving\./i)).toBeInTheDocument();
+    });
   });
 
   test("sends correct FormData payload", async () => {

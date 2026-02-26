@@ -326,10 +326,10 @@ function AddContribution({ onContributionAdded }) {
             </button>
             {status === "saving" && <small>Saving...</small>}
             {status === "success" && (
-              <small className="text-success"> Saved successfully.</small>
+              <small className="text-success">Saved successfully.</small>
             )}
             {status === "error" && (
-              <small className="text-danger"> Error saving.</small>
+              <small className="text-danger">Error saving.</small>
             )}
           </div>
         </form>
