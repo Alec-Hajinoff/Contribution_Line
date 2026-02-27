@@ -46,11 +46,6 @@ try {
     $user = $userStmt->fetch();
     $userName = $user ? $user['name'] : null;
 
-    if (!$view) {
-        echo json_encode(['status' => 'error', 'message' => 'Presentation not found.']);
-        exit;
-    }
-
     $ids = json_decode($view['contributions_id'], true);
 
     if (empty($ids)) {
