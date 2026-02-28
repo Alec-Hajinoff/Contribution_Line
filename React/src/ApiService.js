@@ -3,7 +3,7 @@
 export const registerUser = async (formData) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/form_capture.php",
+      "https://contributionline.com/Contribution_Line/form_capture.php",
       {
         method: "POST",
         headers: {
@@ -25,7 +25,7 @@ export const registerUser = async (formData) => {
 export const loginUser = async (formData) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/login_capture.php",
+      "https://contributionline.com/Contribution_Line/login_capture.php",
       {
         method: "POST",
         headers: {
@@ -47,7 +47,7 @@ export const loginUser = async (formData) => {
 export const logoutUser = async () => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/logout_component.php",
+      "https://contributionline.com/Contribution_Line/logout_component.php",
       {
         method: "POST",
         credentials: "include",
@@ -68,7 +68,7 @@ export const logoutUser = async () => {
 export const addContribution = async (formData) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/add_contribution.php",
+      "https://contributionline.com/Contribution_Line/add_contribution.php",
       {
         method: "POST",
 
@@ -94,7 +94,7 @@ export const addContribution = async (formData) => {
 export const contributionsTimeline = async () => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/contributions_timeline.php",
+      "https://contributionline.com/Contribution_Line/contributions_timeline.php",
       {
         method: "GET",
         headers: {
@@ -121,7 +121,7 @@ export const contributionsTimeline = async () => {
 export const presentationViewPost = async (contributionIds) => {
   try {
     const response = await fetch(
-      "http://localhost:8001/Contribution_Line/presentation_view_post.php",
+      "https://contributionline.com/Contribution_Line/presentation_view_post.php",
       {
         method: "POST",
         headers: {
@@ -146,7 +146,7 @@ export const presentationViewPost = async (contributionIds) => {
 export const presentationViewGet = async (id) => {
   try {
     const response = await fetch(
-      `http://localhost:8001/Contribution_Line/presentation_view_get.php?id=${id}`,
+      `https://contributionline.com/Contribution_Line/presentation_view_get.php?id=${id}`,
       {
         method: "GET",
         headers: {
