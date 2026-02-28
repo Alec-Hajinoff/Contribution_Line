@@ -2,7 +2,9 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    "http://localhost:3000"
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -10,7 +12,7 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
@@ -32,12 +34,18 @@ if (isset($input['email'], $input['password'])) {
         exit;
     }
     $password = $input['password'];
+
     try {
-        $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
-            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-            PDO::ATTR_EMULATE_PREPARES => false
-        ]);
+        $pdo = new PDO(
+            'mysql:host=localhost;dbname=contribution_line',
+            'contribution_line_user',
+            'gb5CQ4yP5Xu4iQB',
+            [
+                PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                PDO::ATTR_EMULATE_PREPARES => false
+            ]
+        );
 
         $pdo->beginTransaction();
 
@@ -47,7 +55,7 @@ if (isset($input['email'], $input['password'])) {
 
         if ($user && password_verify($password, $user['password'])) {
             session_regenerate_id(true);
-            $_SESSION["id"] = $user["id"];
+            $_SESSION['id'] = $user['id'];
 
             $response = [
                 'status' => 'success',

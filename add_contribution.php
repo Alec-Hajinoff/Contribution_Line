@@ -1,7 +1,12 @@
 <?php
 require_once 'session_config.php';
 
-$allowed_origins = ['http://localhost:3000'];
+$allowed_origins = [
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
+];
+
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 
 if (in_array($origin, $allowed_origins)) {
@@ -43,11 +48,16 @@ if (!$title || !$what_happened || !$why_it_mattered || !$outcome_impact || !$con
 $categories_json = json_encode(is_array($categories) ? $categories : []);
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=contribution_line',
+        'contribution_line_user',
+        'gb5CQ4yP5Xu4iQB',
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
 
     $pdo->beginTransaction();
 

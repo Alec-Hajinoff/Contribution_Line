@@ -2,7 +2,9 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -40,18 +42,23 @@ if (!isset($input['contributions_id']) || !is_array($input['contributions_id']))
 $contributionIdsJson = json_encode($input['contributions_id']);
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=contribution_line',
+        'contribution_line_user',
+        'gb5CQ4yP5Xu4iQB',
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
 
     $pdo->beginTransaction();
 
     $stmt = $pdo->prepare('
-    INSERT INTO presentation_view (users_id, contributions_id, created_at) 
-    VALUES (?, ?, NOW())
-');
+        INSERT INTO presentation_view (users_id, contributions_id, created_at) 
+        VALUES (?, ?, NOW())
+    ');
 
     $stmt->execute([
         $userId,

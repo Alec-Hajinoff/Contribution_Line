@@ -2,7 +2,9 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    "http://localhost:3000"
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -10,30 +12,30 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
 header('Access-Control-Allow-Credentials: true');
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$servername = "127.0.0.1";
-$username = "root";
-$passwordServer = "";
-$dbname = "contribution_line";
+$servername = '127.0.0.1';
+$username = 'contribution_line_user';
+$passwordServer = 'gb5CQ4yP5Xu4iQB';
+$dbname = 'contribution_line';
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $passwordServer);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 } catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+    die('Connection failed: ' . $e->getMessage());
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -61,7 +63,7 @@ try {
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (email, password, name) VALUES (:email, :password, :name)";
+    $sql = 'INSERT INTO users (email, password, name) VALUES (:email, :password, :name)';
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bindParam(':email', $email);

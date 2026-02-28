@@ -3,7 +3,9 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -32,11 +34,16 @@ if (!isset($_SESSION['id'])) {
 $user_id = $_SESSION['id'];
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
-        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
-        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
-        PDO::ATTR_EMULATE_PREPARES => false
-    ]);
+    $pdo = new PDO(
+        'mysql:host=localhost;dbname=contribution_line',
+        'contribution_line_user',
+        'gb5CQ4yP5Xu4iQB',
+        [
+            PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+            PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+            PDO::ATTR_EMULATE_PREPARES => false
+        ]
+    );
 
     $stmt = $pdo->prepare('
         SELECT 
