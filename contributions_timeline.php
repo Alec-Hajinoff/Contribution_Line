@@ -8,10 +8,11 @@ $allowed_origins = [
     'https://www.contributionline.com'
 ];
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? null;
 
-if (in_array($origin, $allowed_origins)) {
+if ($origin !== null && in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
+} elseif ($origin === null) {
 } else {
     header('HTTP/1.1 403 Forbidden');
     exit;
