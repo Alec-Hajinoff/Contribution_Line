@@ -2,7 +2,7 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    "http://localhost:3000"
+    'http://localhost:3000'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -10,30 +10,30 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
 header('Access-Control-Allow-Credentials: true');
-header("Access-Control-Allow-Methods: POST, GET, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header('Access-Control-Allow-Methods: POST, GET, OPTIONS');
+header('Access-Control-Allow-Headers: Content-Type, Authorization');
 header('Content-Type: application/json');
 
 if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit;
 }
 
-$servername = "127.0.0.1";
-$username = "root";
-$passwordServer = "";
-$dbname = "contribution_line";
+$servername = '127.0.0.1';
+$username = 'root';
+$passwordServer = '';
+$dbname = 'contribution_line';
 
 try {
     $conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $passwordServer);
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     $conn->setAttribute(PDO::ATTR_EMULATE_PREPARES, false);
 } catch (PDOException $e) {
-    die("Connection failed: " . $e->getMessage());
+    die('Connection failed: ' . $e->getMessage());
 }
 
 $input = json_decode(file_get_contents('php://input'), true);
@@ -57,11 +57,32 @@ if (!$name || !$email || !$password) {
 }
 
 try {
+    $checkSql = 'SELECT id FROM users WHERE email = :email LIMIT 1';
+    $checkStmt = $conn->prepare($checkSql);
+    $checkStmt->bindParam(':email', $email);
+    $checkStmt->execute();
+
+    if ($checkStmt->rowCount() > 0) {
+        echo json_encode([
+            'success' => false,
+            'message' => 'We couldn’t use this email. Please try a different one.'
+        ]);
+        exit;
+    }
+} catch (Exception $e) {
+    echo json_encode([
+        'success' => false,
+        'message' => 'Database error during email verification'
+    ]);
+    exit;
+}
+
+try {
     $conn->beginTransaction();
 
     $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
 
-    $sql = "INSERT INTO users (email, password, name) VALUES (:email, :password, :name)";
+    $sql = 'INSERT INTO users (email, password, name) VALUES (:email, :password, :name)';
     $stmt = $conn->prepare($sql);
     if ($stmt) {
         $stmt->bindParam(':email', $email);

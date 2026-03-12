@@ -48,7 +48,9 @@ function UserRegistration() {
       if (data.success) {
         navigate("/RegisteredPage");
       } else {
-        setErrorMessage("Registration failed. Please try again.");
+        setErrorMessage(
+          data.message || "Registration failed. Please try again.",
+        );
       }
     } catch (error) {
       setErrorMessage(error.message);
