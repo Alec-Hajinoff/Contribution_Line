@@ -9,10 +9,11 @@ function Footer() {
       <div className="row">
         <p className="footer">
           <em>
-            &copy; Copyright 2025 - {currentYear}. All rights reserved. Company
-            address: 4 Bridge Gate, London, N21 2AH, United Kingdom. Email
-            address:<span> </span>
-            <a href="mailto:team@contributionline.com">team@contributionline.com</a>
+            &copy; Copyright 2025 - {currentYear}. Company address: 4 Bridge
+            Gate, London, N21 2AH, United Kingdom. Email address:<span> </span>
+            <a href="mailto:team@contributionline.com">
+              team@contributionline.com
+            </a>
           </em>
         </p>
       </div>
