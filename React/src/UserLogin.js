@@ -20,18 +20,30 @@ function UserLogin() {
     });
   };
 
+  const clearErrorMessageAfterDelay = () => {
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 3000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
       const data = await loginUser(formData);
       if (data.status === "success") {
-          navigate("/UserDashboard");
+        navigate("/UserDashboard");
       } else {
         setErrorMessage("Sign in failed. Please try again.");
+        clearErrorMessageAfterDelay();
+
+        setFormData({ email: "", password: "" });
       }
     } catch (error) {
       setErrorMessage(error.message);
+      clearErrorMessageAfterDelay();
+
+      setFormData({ email: "", password: "" });
     } finally {
       setLoading(false);
     }
