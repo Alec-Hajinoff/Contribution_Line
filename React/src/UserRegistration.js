@@ -74,10 +74,14 @@ function UserRegistration() {
           data.message || "Registration failed. Please try again.",
         );
         clearErrorMessageAfterDelay();
+
+        setFormData({ name: "", email: "", password: "" });
       }
     } catch (error) {
       setErrorMessage(error.message);
       clearErrorMessageAfterDelay();
+
+      setFormData({ name: "", email: "", password: "" });
     } finally {
       setLoading(false);
     }
