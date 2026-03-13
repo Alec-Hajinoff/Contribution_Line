@@ -13,6 +13,8 @@ function UserRegistration() {
   const [errorMessage, setErrorMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
@@ -21,10 +23,23 @@ function UserRegistration() {
     });
   };
 
+  const clearErrorMessageAfterDelay = () => {
+    setTimeout(() => {
+      setErrorMessage("");
+    }, 3000);
+  };
+
+  const clearSuccessMessageAfterDelay = () => {
+    setTimeout(() => {
+      setSuccessMessage("");
+    }, 5000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (formData.password.length < 8) {
       setErrorMessage("Password must be at least 8 characters long");
+      clearErrorMessageAfterDelay();
       return;
     }
 
@@ -33,12 +48,14 @@ function UserRegistration() {
       setErrorMessage(
         "Please enter a valid email address (e.g., name@domain.com)",
       );
+      clearErrorMessageAfterDelay();
       return;
     }
 
     const namePattern = /^[a-zA-Z ]+$/;
     if (!namePattern.test(formData.name)) {
       setErrorMessage("Name can only contain letters and spaces");
+      clearErrorMessageAfterDelay();
       return;
     }
 
@@ -46,14 +63,21 @@ function UserRegistration() {
     try {
       const data = await registerUser(formData);
       if (data.success) {
-        navigate("/RegisteredPage");
+        setSuccessMessage(
+          "Check your email to sign in. We've sent you a link to confirm your email address.",
+        );
+        clearSuccessMessageAfterDelay();
+        setFormData({ name: "", email: "", password: "" });
+        setErrorMessage("");
       } else {
         setErrorMessage(
           data.message || "Registration failed. Please try again.",
         );
+        clearErrorMessageAfterDelay();
       }
     } catch (error) {
       setErrorMessage(error.message);
+      clearErrorMessageAfterDelay();
     } finally {
       setLoading(false);
     }
@@ -64,6 +88,11 @@ function UserRegistration() {
       {" "}
       {/*noValidate disables the browser outputting its error messages
     and custom validation runs for name, email address, password*/}
+      {successMessage && (
+        <div className="alert alert-success" role="alert">
+          {successMessage}
+        </div>
+      )}
       <div className="form-group">
         <input
           autoComplete="off"
