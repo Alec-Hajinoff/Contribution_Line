@@ -92,11 +92,6 @@ function UserRegistration() {
       {" "}
       {/*noValidate disables the browser outputting its error messages
     and custom validation runs for name, email address, password*/}
-      {successMessage && (
-        <div className="alert alert-success" role="alert">
-          {successMessage}
-        </div>
-      )}
       <div className="form-group">
         <input
           autoComplete="off"
@@ -136,6 +131,11 @@ function UserRegistration() {
           placeholder="Choose a strong password"
         />
       </div>
+      {successMessage && (
+        <div id="success-message" className="error" aria-live="polite">
+          {successMessage}
+        </div>
+      )}
       <div id="error-message" className="error" aria-live="polite">
         {errorMessage}
       </div>
