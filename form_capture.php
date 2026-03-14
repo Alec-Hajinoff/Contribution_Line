@@ -17,9 +17,6 @@ if ($config === false) {
 $mailUsername = $config['MAIL_USERNAME'];
 $mailPassword = $config['MAIL_PASSWORD'];
 
-error_log('Loaded username: ' . $mailUsername);
-error_log('Loaded password length: ' . strlen($mailPassword));
-
 if (empty($mailUsername) || empty($mailPassword)) {
     error_log('Gmail credentials not found in .env file');
     echo json_encode(['success' => false, 'message' => 'Server configuration error']);
