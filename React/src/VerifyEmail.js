@@ -24,12 +24,7 @@ function VerifyEmail() {
         const data = await verifyEmail(token);
 
         if (data.success) {
-          setStatus("success");
-          setMessage("Email verified successfully! Redirecting to login...");
-
-          setTimeout(() => {
-            navigate("/RegisteredPage");
-          }, 2000);
+          navigate("/RegisteredPage");
         } else {
           setStatus("error");
           setMessage(data.message || "Verification failed. Please try again.");
@@ -59,14 +54,6 @@ function VerifyEmail() {
                     <span className="visually-hidden">Loading...</span>
                   </div>
                   <p className="mt-3">Verifying your email address...</p>
-                </>
-              )}
-
-              {status === "success" && (
-                <>
-                  <div className="alert alert-success" role="alert">
-                    {message}
-                  </div>
                 </>
               )}
 
