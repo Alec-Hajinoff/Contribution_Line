@@ -140,7 +140,7 @@ try {
             $mail->Body = "Thank you for creating an account with Contribution Line.\n\n"
                 . "Please click the link below to verify your email address:\n"
                 . $verificationLink . "\n\n"
-                . "Once verified, you will be able to sign in to your account.\n"
+                . "Once verified, you will be able to sign in to your account.\n\n"
                 . 'This link is valid for 24 hours.';
 
             $mail->send();
