@@ -65,12 +65,6 @@ function UserLogin() {
 
   return (
     <form className="row g-2" onSubmit={handleSubmit}>
-      {unverifiedMessage && (
-        <div className="alert alert-warning" role="alert">
-          {unverifiedMessage}
-        </div>
-      )}
-
       <div className="form-group">
         <input
           autoComplete="off"
@@ -98,9 +92,17 @@ function UserLogin() {
           onChange={handleChange}
         />
       </div>
+
+      {unverifiedMessage && (
+        <div id="unverified-message" className="error" aria-live="polite">
+          {unverifiedMessage}
+        </div>
+      )}
+
       <div id="error-message-one" className="error" aria-live="polite">
         {errorMessage}
       </div>
+
       <button type="submit" className="btn btn-secondary" id="loginBtn">
         Login
         <span
