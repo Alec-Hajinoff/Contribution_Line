@@ -8,7 +8,8 @@ function RegisteredPage() {
       <div className="row">
         <div className="col-12 col-md-9">
           <p>
-            Thank you for registering! Please log in using your credentials.
+            Thank you for verifying your email address! Please log in using your
+            credentials.
           </p>
         </div>
         <div className="col-12 col-md-3">

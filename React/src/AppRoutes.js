@@ -4,6 +4,7 @@ import RegisteredPage from "./RegisteredPage";
 import UserDashboard from "./UserDashboard";
 import LogoutComponent from "./LogoutComponent";
 import PresentationView from "./PresentationView";
+import VerifyEmail from "./VerifyEmail";
 import React from "react";
 
 export default function AppRoutes() {
@@ -14,6 +15,7 @@ export default function AppRoutes() {
       <Route path="/UserDashboard" element={<UserDashboard />} />
       <Route path="/LogoutComponent" element={<LogoutComponent />} />
       <Route path="/PresentationView/:id" element={<PresentationView />} />
+      <Route path="/VerifyEmail" element={<VerifyEmail />} />
     </Routes>
   );
 }

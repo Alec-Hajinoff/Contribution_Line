@@ -166,3 +166,27 @@ export const presentationViewGet = async (id) => {
     throw new Error("An error occurred while fetching the presentation view.");
   }
 };
+
+// verifyEmail() checks the token in the email against database and redirects to sign in.
+
+export const verifyEmail = async (token) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/verify_email.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ token: token }),
+      },
+    );
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Error verifying email:", error);
+    throw new Error("An error occurred during email verification.");
+  }
+};

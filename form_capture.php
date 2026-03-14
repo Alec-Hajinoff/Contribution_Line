@@ -118,7 +118,7 @@ try {
 
         $userId = $conn->lastInsertId();
 
-        $verificationLink = 'http://localhost:8001/VerifyEmail?token=' . urlencode($verificationToken);
+        $verificationLink = 'http://localhost:3000/VerifyEmail?token=' . urlencode($verificationToken);
 
         $mail = new PHPMailer(true);
 
