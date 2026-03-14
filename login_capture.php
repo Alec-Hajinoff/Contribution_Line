@@ -2,7 +2,7 @@
 require_once 'session_config.php';
 
 $allowed_origins = [
-    "http://localhost:3000"
+    'http://localhost:3000'
 ];
 
 $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
@@ -10,7 +10,7 @@ $origin = $_SERVER['HTTP_ORIGIN'] ?? '';
 if (in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
 } else {
-    header("HTTP/1.1 403 Forbidden");
+    header('HTTP/1.1 403 Forbidden');
     exit;
 }
 
@@ -46,8 +46,17 @@ if (isset($input['email'], $input['password'])) {
         $user = $stmt->fetch();
 
         if ($user && password_verify($password, $user['password'])) {
+            if ($user['is_verified'] == 0) {
+                $pdo->rollBack();
+                echo json_encode([
+                    'status' => 'unverified',
+                    'message' => 'Please confirm your email address before signing in. Check your inbox and click the verification link we sent you.'
+                ]);
+                exit;
+            }
+
             session_regenerate_id(true);
-            $_SESSION["id"] = $user["id"];
+            $_SESSION['id'] = $user['id'];
 
             $response = [
                 'status' => 'success',

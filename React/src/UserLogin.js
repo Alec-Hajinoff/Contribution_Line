@@ -10,6 +10,8 @@ function UserLogin() {
     password: "",
   });
   const [errorMessage, setErrorMessage] = useState("");
+
+  const [unverifiedMessage, setUnverifiedMessage] = useState("");
   const [loading, setLoading] = useState(false);
 
   const handleChange = (e) => {
@@ -26,23 +28,35 @@ function UserLogin() {
     }, 3000);
   };
 
+  const clearUnverifiedMessageAfterDelay = () => {
+    setTimeout(() => {
+      setUnverifiedMessage("");
+    }, 5000);
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+
+    setErrorMessage("");
+    setUnverifiedMessage("");
+
     try {
       const data = await loginUser(formData);
       if (data.status === "success") {
         navigate("/UserDashboard");
+      } else if (data.status === "unverified") {
+        setUnverifiedMessage(data.message);
+        clearUnverifiedMessageAfterDelay();
+        setFormData({ email: "", password: "" });
       } else {
-        setErrorMessage("Sign in failed. Please try again.");
+        setErrorMessage(data.message || "Sign in failed. Please try again.");
         clearErrorMessageAfterDelay();
-
         setFormData({ email: "", password: "" });
       }
     } catch (error) {
       setErrorMessage(error.message);
       clearErrorMessageAfterDelay();
-
       setFormData({ email: "", password: "" });
     } finally {
       setLoading(false);
@@ -51,6 +65,12 @@ function UserLogin() {
 
   return (
     <form className="row g-2" onSubmit={handleSubmit}>
+      {unverifiedMessage && (
+        <div className="alert alert-warning" role="alert">
+          {unverifiedMessage}
+        </div>
+      )}
+
       <div className="form-group">
         <input
           autoComplete="off"
