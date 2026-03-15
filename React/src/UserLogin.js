@@ -65,16 +65,16 @@ function UserLogin() {
       } else if (data.status === "unverified") {
         setUnverifiedMessage(data.message);
         clearUnverifiedMessageAfterDelay();
-        setFormData({ email: "", password: "" });
+        setFormData({ password: "" });
       } else {
         setErrorMessage(data.message || "Sign in failed. Please try again.");
         clearErrorMessageAfterDelay();
-        setFormData({ email: "", password: "" });
+        setFormData({ password: "" });
       }
     } catch (error) {
       setErrorMessage(error.message);
       clearErrorMessageAfterDelay();
-      setFormData({ email: "", password: "" });
+      setFormData({ password: "" });
     } finally {
       setLoading(false);
     }
