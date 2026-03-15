@@ -38,6 +38,23 @@ function UserLogin() {
     e.preventDefault();
     setLoading(true);
 
+    const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    if (!emailPattern.test(formData.email)) {
+      setErrorMessage(
+        "Please enter a valid email address (e.g., name@domain.com)",
+      );
+      clearErrorMessageAfterDelay();
+      setLoading(false);
+      return;
+    }
+
+    if (formData.password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long");
+      clearErrorMessageAfterDelay();
+      setLoading(false);
+      return;
+    }
+
     setErrorMessage("");
     setUnverifiedMessage("");
 
@@ -64,12 +81,14 @@ function UserLogin() {
   };
 
   return (
-    <form className="row g-2" onSubmit={handleSubmit}>
+    <form className="row g-2" onSubmit={handleSubmit} noValidate>
+      {" "}
+      {/* noValidate disables browser validation */}
       <div className="form-group">
         <input
           autoComplete="off"
           type="email"
-          pattern="[a-z0-9._%+\-]+@[a-z0-9.\-]+\.[a-z]{2,}$"
+          pattern="[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}"
           className="form-control"
           id="yourEmailLogin"
           name="email"
@@ -87,22 +106,20 @@ function UserLogin() {
           id="yourPasswordLogin"
           name="password"
           required
+          minLength="8"
           placeholder="Password"
           value={formData.password}
           onChange={handleChange}
         />
       </div>
-
       {unverifiedMessage && (
         <div id="unverified-message" className="error" aria-live="polite">
           {unverifiedMessage}
         </div>
       )}
-
       <div id="error-message-one" className="error" aria-live="polite">
         {errorMessage}
       </div>
-
       <button type="submit" className="btn btn-secondary" id="loginBtn">
         Login
         <span
