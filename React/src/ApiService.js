@@ -190,3 +190,28 @@ export const verifyEmail = async (token) => {
     throw new Error("An error occurred during email verification.");
   }
 };
+
+// passwordResetLink() sends a user's email address to the backend to send a password rest email.
+
+export const passwordResetLink = async (email) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/password_reset_link.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ email: email }),
+      },
+    );
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("passwordResetLink error:", error);
+
+    return { success: true };
+  }
+};

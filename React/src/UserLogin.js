@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import "./UserLogin.css";
-import { loginUser } from "./ApiService";
+import { loginUser, passwordResetLink } from "./ApiService";
 
 function UserLogin() {
   const navigate = useNavigate();
@@ -13,6 +13,9 @@ function UserLogin() {
 
   const [unverifiedMessage, setUnverifiedMessage] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const [resetMessage, setResetMessage] = useState("");
+  const [resetLoading, setResetLoading] = useState(false);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -31,6 +34,12 @@ function UserLogin() {
   const clearUnverifiedMessageAfterDelay = () => {
     setTimeout(() => {
       setUnverifiedMessage("");
+    }, 5000);
+  };
+
+  const clearResetMessageAfterDelay = () => {
+    setTimeout(() => {
+      setResetMessage("");
     }, 5000);
   };
 
@@ -80,6 +89,35 @@ function UserLogin() {
     }
   };
 
+  const handleForgotPassword = async () => {
+    const emailInput = document.getElementById("yourEmailLogin");
+    const email = emailInput ? emailInput.value : formData.email;
+
+    if (!email || !email.trim()) {
+      setErrorMessage("Please enter your email address first");
+      clearErrorMessageAfterDelay();
+      return;
+    }
+
+    setResetLoading(true);
+    setResetMessage("");
+
+    try {
+      await passwordResetLink(email);
+      setResetMessage(
+        "If an account exists for that email, we've sent a password reset link.",
+      );
+      clearResetMessageAfterDelay();
+    } catch (error) {
+      setResetMessage(
+        "If an account exists for that email, we've sent a password reset link.",
+      );
+      clearResetMessageAfterDelay();
+    } finally {
+      setResetLoading(false);
+    }
+  };
+
   return (
     <form className="row g-2" onSubmit={handleSubmit} noValidate>
       {" "}
@@ -120,6 +158,11 @@ function UserLogin() {
       <div id="error-message-one" className="error" aria-live="polite">
         {errorMessage}
       </div>
+      {resetMessage && (
+        <div id="reset-message" className="reset-message" aria-live="polite">
+          {resetMessage}
+        </div>
+      )}
       <button type="submit" className="btn btn-secondary" id="loginBtn">
         Login
         <span
@@ -130,6 +173,24 @@ function UserLogin() {
           style={{ display: loading ? "inline-block" : "none" }}
         ></span>
       </button>
+      <div className="forgot-password-link-container">
+        <button
+          type="button"
+          className="forgot-password-link"
+          onClick={handleForgotPassword}
+          disabled={resetLoading}
+        >
+          Forgot your password?
+          {resetLoading && (
+            <span
+              className="spinner-border spinner-border-sm"
+              role="status"
+              aria-hidden="true"
+              id="spinnerReset"
+            ></span>
+          )}
+        </button>
+      </div>
       <div id="liveAlertPlaceholder"></div>
     </form>
   );

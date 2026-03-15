@@ -44,3 +44,44 @@ body {
   background-color: #dfd6cd;
   border-color: #dfd6cd;
 }
+
+.reset-message {
+  color: #1b3e73;
+  background-color: #f0ede8;
+  padding: 10px;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  font-weight: 500;
+}
+
+.forgot-password-link-container {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password-link {
+  background: none;
+  border: none;
+  color: #1b3e73;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 5px;
+}
+
+.forgot-password-link:hover {
+  color: #ff8c42;
+  text-decoration: none;
+}
+
+.forgot-password-link:disabled {
+  color: #999;
+  cursor: not-allowed;
+  text-decoration: none;
+}
+
+#spinnerReset {
+  margin-left: 8px;
+  color: #1b3e73;
+}
