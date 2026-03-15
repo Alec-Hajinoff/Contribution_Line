@@ -37,8 +37,10 @@ function UserRegistration() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (formData.password.length < 8) {
-      setErrorMessage("Password must be at least 8 characters long");
+
+    const namePattern = /^[a-zA-Z ]+$/;
+    if (!namePattern.test(formData.name)) {
+      setErrorMessage("Name can only contain letters and spaces");
       clearErrorMessageAfterDelay();
       return;
     }
@@ -52,9 +54,8 @@ function UserRegistration() {
       return;
     }
 
-    const namePattern = /^[a-zA-Z ]+$/;
-    if (!namePattern.test(formData.name)) {
-      setErrorMessage("Name can only contain letters and spaces");
+    if (formData.password.length < 8) {
+      setErrorMessage("Password must be at least 8 characters long");
       clearErrorMessageAfterDelay();
       return;
     }
