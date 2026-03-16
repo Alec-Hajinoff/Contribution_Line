@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./UserLogin.css";
 import { passwordResetToken, updatePassword } from "./ApiService";
+import "./PasswordReset.css";
 
 function PasswordReset() {
   const navigate = useNavigate();
@@ -194,7 +195,7 @@ function PasswordReset() {
         <div className="col-md-6">
           <div className="card">
             <div className="card-body">
-              <h2 className="text-center mb-4">Reset Your Password</h2>
+              <h3 className="text-center mb-4">Reset your password</h3>
 
               <form onSubmit={handleSubmit} noValidate>
                 <div className="form-group mb-3">
