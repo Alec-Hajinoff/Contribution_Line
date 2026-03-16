@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import "./UserLogin.css";
-import { passwordResetToken, updatePassword } from "./ApiService";
 import "./PasswordReset.css";
+import { passwordResetToken, updatePassword } from "./ApiService";
 
 function PasswordReset() {
   const navigate = useNavigate();
@@ -25,6 +25,7 @@ function PasswordReset() {
   const [errorMessage, setErrorMessage] = useState("");
   const [successMessage, setSuccessMessage] = useState("");
   const [loading, setLoading] = useState(false);
+  const [passwordUpdated, setPasswordUpdated] = useState(false);
 
   useEffect(() => {
     const verifyToken = async () => {
@@ -117,15 +118,12 @@ function PasswordReset() {
           "Your password has been updated.\nYou can now sign in using your new credentials.",
         );
         clearSuccessMessageAfterDelay();
+        setPasswordUpdated(true);
 
         setFormData({
           newPassword: "",
           confirmPassword: "",
         });
-
-        setTimeout(() => {
-          navigate("/");
-        }, 5000);
       } else {
         setErrorMessage(
           data.message || "Failed to update password. Please try again.",
@@ -146,13 +144,13 @@ function PasswordReset() {
 
   if (tokenStatus.checking) {
     return (
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6 text-center">
+      <div className="password-reset-container">
+        <div className="password-reset-card">
+          <div className="text-center">
             <div className="spinner-border text-primary" role="status">
               <span className="visually-hidden">Loading...</span>
             </div>
-            <p className="mt-3">Verifying your link...</p>
+            <p className="verifying-text">Verifying your link...</p>
           </div>
         </div>
       </div>
@@ -161,28 +159,15 @@ function PasswordReset() {
 
   if (!tokenStatus.isValid) {
     return (
-      <div className="container mt-5">
-        <div className="row justify-content-center">
-          <div className="col-md-6">
-            <div className="card">
-              <div className="card-body">
-                <div
-                  className="alert alert-danger"
-                  role="alert"
-                  style={{ whiteSpace: "pre-line" }}
-                >
-                  {tokenStatus.message}
-                </div>
-                <div className="text-center mt-4">
-                  <button
-                    onClick={handleReturnHome}
-                    className="btn btn-secondary"
-                  >
-                    Return to home page
-                  </button>
-                </div>
-              </div>
-            </div>
+      <div className="password-reset-container">
+        <div className="password-reset-card">
+          <div className="error token-error" aria-live="polite">
+            {tokenStatus.message}
+          </div>
+          <div className="return-home-container">
+            <button onClick={handleReturnHome} className="btn btn-secondary">
+              Return to home page
+            </button>
           </div>
         </div>
       </div>
@@ -190,86 +175,83 @@ function PasswordReset() {
   }
 
   return (
-    <div className="container mt-5">
-      <div className="row justify-content-center">
-        <div className="col-md-6">
-          <div className="card">
-            <div className="card-body">
-              <h3 className="text-center mb-4">Reset your password</h3>
+    <div className="password-reset-container">
+      <div className="password-reset-card">
+        <h3 className="password-reset-title">Reset your password</h3>
 
-              <form onSubmit={handleSubmit} noValidate>
-                <div className="form-group mb-3">
-                  <input
-                    autoComplete="off"
-                    type="password"
-                    className="form-control"
-                    id="newPassword"
-                    name="newPassword"
-                    required
-                    minLength="8"
-                    placeholder="New password"
-                    value={formData.newPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                <div className="form-group mb-3">
-                  <input
-                    autoComplete="off"
-                    type="password"
-                    className="form-control"
-                    id="confirmPassword"
-                    name="confirmPassword"
-                    required
-                    minLength="8"
-                    placeholder="Confirm password"
-                    value={formData.confirmPassword}
-                    onChange={handleChange}
-                  />
-                </div>
-
-                {errorMessage && (
-                  <div className="alert alert-danger" role="alert">
-                    {errorMessage}
-                  </div>
-                )}
-
-                {successMessage && (
-                  <div
-                    className="alert alert-success"
-                    role="alert"
-                    style={{ whiteSpace: "pre-line" }}
-                  >
-                    {successMessage}
-                    <div className="mt-3">
-                      <button
-                        onClick={handleReturnHome}
-                        className="btn btn-secondary btn-sm"
-                      >
-                        Return to home page
-                      </button>
-                    </div>
-                  </div>
-                )}
-
-                <button
-                  type="submit"
-                  className="btn btn-secondary w-100"
-                  disabled={loading || successMessage}
-                >
-                  Update password
-                  {loading && (
-                    <span
-                      className="spinner-border spinner-border-sm ms-2"
-                      role="status"
-                      aria-hidden="true"
-                    ></span>
-                  )}
-                </button>
-              </form>
-            </div>
+        <form onSubmit={handleSubmit} noValidate>
+          <div className="form-group">
+            <input
+              autoComplete="off"
+              type="password"
+              className="form-control"
+              id="newPassword"
+              name="newPassword"
+              required
+              minLength="8"
+              placeholder="New password"
+              value={formData.newPassword}
+              onChange={handleChange}
+              disabled={passwordUpdated}
+            />
           </div>
-        </div>
+
+          <div className="form-group">
+            <input
+              autoComplete="off"
+              type="password"
+              className="form-control"
+              id="confirmPassword"
+              name="confirmPassword"
+              required
+              minLength="8"
+              placeholder="Confirm password"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              disabled={passwordUpdated}
+            />
+          </div>
+
+          {errorMessage && (
+            <div id="error-message" className="error" aria-live="polite">
+              {errorMessage}
+            </div>
+          )}
+
+          {successMessage && (
+            <div
+              id="success-message"
+              className="error success-message"
+              aria-live="polite"
+            >
+              {successMessage}
+              <div className="return-home-button-container">
+                <button
+                  onClick={handleReturnHome}
+                  className="btn btn-secondary return-home-button"
+                >
+                  Return to home page
+                </button>
+              </div>
+            </div>
+          )}
+
+          <button
+            type="submit"
+            className="btn btn-secondary update-password-button"
+            disabled={loading || passwordUpdated}
+          >
+            Update password
+            {loading && (
+              <span
+                className="spinner-border spinner-border-sm"
+                role="status"
+                aria-hidden="true"
+                id="spinnerUpdate"
+              ></span>
+            )}
+          </button>
+        </form>
       </div>
     </div>
   );
