@@ -28,7 +28,7 @@ function UserLogin() {
   const clearErrorMessageAfterDelay = () => {
     setTimeout(() => {
       setErrorMessage("");
-    }, 3000);
+    }, 5000);
   };
 
   const clearUnverifiedMessageAfterDelay = () => {

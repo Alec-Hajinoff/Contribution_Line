@@ -5,6 +5,7 @@ import UserDashboard from "./UserDashboard";
 import LogoutComponent from "./LogoutComponent";
 import PresentationView from "./PresentationView";
 import VerifyEmail from "./VerifyEmail";
+import PasswordReset from "./PasswordReset";
 import React from "react";
 
 export default function AppRoutes() {
@@ -16,6 +17,7 @@ export default function AppRoutes() {
       <Route path="/LogoutComponent" element={<LogoutComponent />} />
       <Route path="/PresentationView/:id" element={<PresentationView />} />
       <Route path="/VerifyEmail" element={<VerifyEmail />} />
+      <Route path="/PasswordReset" element={<PasswordReset />} />
     </Routes>
   );
 }

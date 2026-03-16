@@ -26,7 +26,7 @@ function UserRegistration() {
   const clearErrorMessageAfterDelay = () => {
     setTimeout(() => {
       setErrorMessage("");
-    }, 3000);
+    }, 5000);
   };
 
   const clearSuccessMessageAfterDelay = () => {
