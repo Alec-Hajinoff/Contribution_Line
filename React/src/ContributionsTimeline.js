@@ -6,6 +6,7 @@ import SelectedTally from "./SelectedTally";
 import { presentationViewPost } from "./ApiService";
 import DeleteContribution from "./DeleteContribution";
 import UpdateContribution from "./UpdateContribution";
+import CsvExport from "./CsvExport";
 
 const ContributionsTimeline = () => {
   const [contributions, setContributions] = useState([]);
@@ -130,6 +131,10 @@ const ContributionsTimeline = () => {
         setFilters={setFilters}
         onClear={handleClearFilters}
       />
+
+      <div className="d-flex justify-content-end mb-3">
+        <CsvExport contributions={contributions} />
+      </div>
 
       {selectedContributions.length > 0 && (
         <SelectedTally
