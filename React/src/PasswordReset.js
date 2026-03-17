@@ -84,12 +84,6 @@ function PasswordReset() {
     }, 5000);
   };
 
-  const clearSuccessMessageAfterDelay = () => {
-    setTimeout(() => {
-      setSuccessMessage("");
-    }, 5000);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -117,7 +111,7 @@ function PasswordReset() {
         setSuccessMessage(
           "Your password has been updated.\nYou can now sign in using your new credentials.",
         );
-        clearSuccessMessageAfterDelay();
+
         setPasswordUpdated(true);
 
         setFormData({
