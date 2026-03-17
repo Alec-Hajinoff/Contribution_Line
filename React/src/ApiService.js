@@ -304,3 +304,32 @@ export const deleteContribution = async (contributionId) => {
     };
   }
 };
+
+// updateContribution() updates an existing contribution and saves the updated version.
+
+export const updateContribution = async (formData) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/update_contribution.php",
+      {
+        method: "POST",
+        credentials: "include",
+        body: formData,
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("updateContribution error:", error);
+    return {
+      status: "error",
+      message:
+        error.message || "An error occurred while updating the contribution.",
+    };
+  }
+};
