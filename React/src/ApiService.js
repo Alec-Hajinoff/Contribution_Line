@@ -272,3 +272,35 @@ export const updatePassword = async (token, newPassword) => {
     };
   }
 };
+
+// deleteContribution() deletes an existing contribution and all its associated data.
+
+export const deleteContribution = async (contributionId) => {
+  try {
+    const response = await fetch(
+      "http://localhost:8001/Contribution_Line/delete_contribution.php",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({ contribution_id: contributionId }),
+      },
+    );
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("deleteContribution error:", error);
+    return {
+      status: "error",
+      message:
+        error.message || "An error occurred while deleting the contribution.",
+    };
+  }
+};

@@ -4,6 +4,7 @@ import "./ContributionsTimeline.css";
 import TimelineFilter from "./TimelineFilter";
 import SelectedTally from "./SelectedTally";
 import { presentationViewPost } from "./ApiService";
+import DeleteContribution from "./DeleteContribution";
 
 const ContributionsTimeline = () => {
   const [contributions, setContributions] = useState([]);
@@ -267,7 +268,19 @@ const ContributionsTimeline = () => {
                   </div>
 
                   <div className="d-flex justify-content-between align-items-center mt-4">
-                    <div></div>
+                    <div>
+                      <DeleteContribution
+                        contributionId={item.id}
+                        onDelete={(deletedId) => {
+                          setContributions((prev) =>
+                            prev.filter((c) => c.id !== deletedId),
+                          );
+                          setSelectedContributions((prev) =>
+                            prev.filter((c) => c.id !== deletedId),
+                          );
+                        }}
+                      />
+                    </div>
                     <button
                       className="btn btn-sm btn-secondary"
                       onClick={() => handleAddToPresentation(item)}

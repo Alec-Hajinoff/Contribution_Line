@@ -225,7 +225,7 @@ const PresentationView = () => {
           className="btn btn-secondary px-4 shadow-sm"
           onClick={() => window.print()}
         >
-          Print Presentation / Save as PDF
+          Print / Save as PDF
         </button>
       </div>
     </div>
