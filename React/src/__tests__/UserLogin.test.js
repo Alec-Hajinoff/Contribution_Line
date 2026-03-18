@@ -1,37 +1,36 @@
 import React from "react";
-import { render, screen, fireEvent } from "@testing-library/react";
+import { render, screen, fireEvent, waitFor } from "@testing-library/react";
 import { useNavigate } from "react-router-dom";
 import UserLogin from "../UserLogin";
+import { loginUser } from "../ApiService";
 
+jest.mock("../ApiService", () => ({
+  loginUser: jest.fn(),
+  passwordResetLink: jest.fn(),
+}));
+
+const mockNavigate = jest.fn();
 jest.mock("react-router-dom", () => ({
-  useNavigate: jest.fn(),
+  ...jest.requireActual("react-router-dom"),
+  useNavigate: () => mockNavigate,
 }));
 
 describe("UserLogin", () => {
-  let navigateMock;
-
   beforeEach(() => {
-    navigateMock = jest.fn();
-    useNavigate.mockReturnValue(navigateMock);
-
-    global.fetch = jest.fn(() =>
-      Promise.resolve({
-        json: () =>
-          Promise.resolve({
-            status: "success",
-            registration_status: "Registration data is not complete",
-          }),
-      }),
-    );
-  });
-
-  afterEach(() => {
     jest.clearAllMocks();
   });
 
-  it("renders the login form", () => {
-    render(<UserLogin />);
+  const fillForm = (email = "test@example.com", password = "password123") => {
+    fireEvent.change(screen.getByPlaceholderText("Email address"), {
+      target: { value: email },
+    });
+    fireEvent.change(screen.getByPlaceholderText("Password"), {
+      target: { value: password },
+    });
+  };
 
+  it("renders the login form with all fields", () => {
+    render(<UserLogin />);
     expect(screen.getByPlaceholderText("Email address")).toBeInTheDocument();
     expect(screen.getByPlaceholderText("Password")).toBeInTheDocument();
     expect(screen.getByRole("button", { name: /login/i })).toBeInTheDocument();
@@ -39,82 +38,58 @@ describe("UserLogin", () => {
 
   it("updates form data when input values change", () => {
     render(<UserLogin />);
-
     const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-
     fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-
     expect(emailInput.value).toBe("john@example.com");
-    expect(passwordInput.value).toBe("password123");
   });
 
-  it("submits the form and navigates to AccountPage on success", async () => {
+  it("submits the form and navigates to UserDashboard on success", async () => {
+    loginUser.mockResolvedValueOnce({ status: "success" });
     render(<UserLogin />);
 
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    fillForm();
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
-
-    await new Promise((resolve) => setTimeout(resolve, 50));
-
-    expect(global.fetch).toHaveBeenCalledWith(
-      "http://localhost:8001/Contribution_Line/login_capture.php",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include",
-        body: JSON.stringify({
-          email: "john@example.com",
-          password: "password123",
-        }),
-      },
-    );
-
-    expect(navigateMock).toHaveBeenCalledWith("/UserDashboard");
+    await waitFor(() => {
+      expect(loginUser).toHaveBeenCalledWith({
+        email: "test@example.com",
+        password: "password123",
+      });
+      expect(mockNavigate).toHaveBeenCalledWith("/UserDashboard");
+    });
   });
 
-  it("displays an error message when login fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.resolve({
-        json: () => Promise.resolve({ status: "failure" }),
-      }),
-    );
-
+  it("displays an error message when login credentials are invalid", async () => {
+    loginUser.mockResolvedValueOnce({
+      status: "failure",
+      message: "Invalid credentials",
+    });
     render(<UserLogin />);
 
-    const emailInput = screen.getByPlaceholderText("Email address");
-    const passwordInput = screen.getByPlaceholderText("Password");
-    const submitButton = screen.getByRole("button", { name: /login/i });
+    fillForm();
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-    fireEvent.change(emailInput, { target: { value: "john@example.com" } });
-    fireEvent.change(passwordInput, { target: { value: "password123" } });
-    fireEvent.click(submitButton);
+    expect(await screen.findByText("Invalid credentials")).toBeInTheDocument();
+  });
 
-    await new Promise((resolve) => setTimeout(resolve, 30));
+  it("displays validation error for invalid email format", async () => {
+    render(<UserLogin />);
+    fillForm("invalid-email", "password123");
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
+
     expect(
-      screen.getByText("Sign in failed. Please try again."),
+      screen.getByText(/Please enter a valid email address/i),
     ).toBeInTheDocument();
+    expect(loginUser).not.toHaveBeenCalled();
   });
 
-  it("displays an error message when fetch fails", async () => {
-    global.fetch.mockImplementationOnce(() =>
-      Promise.reject(new Error("Network error")),
-    );
-
+  it("displays an error message when the API call fails", async () => {
+    loginUser.mockRejectedValueOnce(new Error("An error occurred."));
     render(<UserLogin />);
 
-    const submitButton = screen.getByRole("button", { name: /login/i });
-    fireEvent.click(submitButton);
+    fillForm();
+    fireEvent.click(screen.getByRole("button", { name: /login/i }));
 
-    await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(screen.getByText("")).toBeInTheDocument();
+    expect(await screen.findByText("An error occurred.")).toBeInTheDocument();
   });
 });
