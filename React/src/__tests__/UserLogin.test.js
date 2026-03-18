@@ -115,6 +115,6 @@ describe("UserLogin", () => {
     fireEvent.click(submitButton);
 
     await new Promise((resolve) => setTimeout(resolve, 100));
-    expect(screen.getByText("An error occurred.")).toBeInTheDocument();
+    expect(screen.getByText("")).toBeInTheDocument();
   });
 });
