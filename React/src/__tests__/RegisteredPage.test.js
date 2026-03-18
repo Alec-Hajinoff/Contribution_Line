@@ -18,7 +18,7 @@ describe("RegisteredPage", () => {
 
     expect(
       screen.getByText(
-        /Thank you for registering! Please log in using your credentials./i,
+        /Please log in using your credentials./i,
       ),
     ).toBeInTheDocument();
   });

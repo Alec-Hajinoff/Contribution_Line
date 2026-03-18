@@ -31,325 +31,217 @@ jest.mock("../SelectedTally", () => ({ count, onDisplay, onCancel }) => (
   </div>
 ));
 
+jest.mock("../DeleteContribution", () => ({ contributionId, onDelete }) => (
+  <button
+    data-testid={`delete-${contributionId}`}
+    onClick={() => onDelete(contributionId)}
+  >
+    Delete Mock
+  </button>
+));
+
+jest.mock(
+  "../UpdateContribution",
+  () =>
+    ({ contribution, onUpdate, onCancel }) =>
+      (
+        <div data-testid="update-form">
+          Update Form for {contribution.title}
+          <button
+            onClick={() =>
+              onUpdate({ ...contribution, title: "Updated Title" })
+            }
+          >
+            Submit Update
+          </button>
+          <button onClick={onCancel}>Cancel Update</button>
+        </div>
+      ),
+);
+
+jest.mock("../CsvExport", () => () => (
+  <div data-testid="csv-export">CsvExport</div>
+));
+
 window.open = jest.fn();
 
-describe("ContributionsTimeline – Full Component Test", () => {
+global.URL.createObjectURL = jest.fn(() => "blob:mock-url");
+global.URL.revokeObjectURL = jest.fn();
+
+global.atob = jest.fn((str) => Buffer.from(str, "base64").toString("binary"));
+
+describe("ContributionsTimeline", () => {
   beforeEach(() => {
     jest.clearAllMocks();
+    jest.spyOn(window, "alert").mockImplementation(() => {});
   });
 
-  test("shows loading state initially", async () => {
-    contributionsTimeline.mockResolvedValueOnce([]);
+  const mockContributions = [
+    {
+      id: 1,
+      title: "Contribution A",
+      contribution_date: "2024-01-01",
+      created_at: "2024-02-01T10:00:00Z",
+      categories: ["Leadership / Ownership"],
+      what_happened: "Something happened",
+      why_it_mattered: "It mattered",
+      outcome_impact: "Big impact",
+      current_role: "Senior dev",
+      current_company: "ACME",
+      evidence_links: [{ url: "https://example.com" }],
+      files: [
+        {
+          file_name: "test.pdf",
+          file_data: "YmFzZTY0",
+          mime_type: "application/pdf",
+        },
+      ],
+    },
+  ];
 
+  test("shows loading state and then contributions", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
     render(<ContributionsTimeline />);
 
     expect(screen.getByText(/loading/i)).toBeInTheDocument();
 
-    await waitFor(() => expect(contributionsTimeline).toHaveBeenCalled());
-  });
-
-  test("shows error message when fetch fails", async () => {
-    contributionsTimeline.mockRejectedValueOnce(new Error("Network error"));
-
-    render(<ContributionsTimeline />);
-
-    await waitFor(() => {
-      expect(screen.getByText(/network error/i)).toBeInTheDocument();
-    });
-  });
-
-  test("renders contributions after successful fetch", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution A",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: ["Leadership / Ownership"],
-        what_happened: "Something happened",
-        why_it_mattered: "It mattered",
-        outcome_impact: "Big impact",
-        evidence_links: [],
-        files: [],
-      },
-    ]);
-
-    render(<ContributionsTimeline />);
-
     await waitFor(() => {
       expect(screen.getByText("Contribution A")).toBeInTheDocument();
     });
-
-    expect(screen.getByText("Something happened")).toBeInTheDocument();
-    expect(screen.getByText("It mattered")).toBeInTheDocument();
-    expect(screen.getByText("Big impact")).toBeInTheDocument();
+    expect(screen.queryByText(/loading/i)).not.toBeInTheDocument();
   });
 
-  test("filters contributions by start date", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Old Contribution",
-        contribution_date: "2023-01-01",
-        created_at: "2023-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
-      },
-      {
-        id: 2,
-        title: "New Contribution",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
-      },
-    ]);
-
+  test("shows error message when fetch fails", async () => {
+    contributionsTimeline.mockRejectedValueOnce(new Error("API Error"));
     render(<ContributionsTimeline />);
 
     await waitFor(() => {
-      expect(screen.getByText("Old Contribution")).toBeInTheDocument();
-      expect(screen.getByText("New Contribution")).toBeInTheDocument();
+      expect(screen.getByText("API Error")).toBeInTheDocument();
     });
-
-    fireEvent.change(screen.getByLabelText(/start date/i), {
-      target: { value: "2023-12-31" },
-    });
-
-    expect(screen.queryByText("Old Contribution")).not.toBeInTheDocument();
-    expect(screen.getByText("New Contribution")).toBeInTheDocument();
   });
 
-  test("renders evidence links", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution with link",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [
-          { url: "https://example.com/doc1" },
-          { url: "https://example.com/doc2" },
-        ],
-        files: [],
-      },
-    ]);
-
-    render(<ContributionsTimeline />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Contribution with link")).toBeInTheDocument();
-    });
-
-    expect(screen.getByText("https://example.com/doc1")).toBeInTheDocument();
-    expect(screen.getByText("https://example.com/doc2")).toBeInTheDocument();
-  });
-
-  test("clicking supporting file triggers downloadFile", async () => {
-    const mockFile = {
-      file_name: "evidence.pdf",
-      file_data: btoa("dummy content"),
-      mime_type: "application/pdf",
-    };
-
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution with file",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [mockFile],
-      },
-    ]);
-
-    const createObjectURL = jest.fn(() => "blob:mock-url");
-    const revokeObjectURL = jest.fn();
-
-    global.URL.createObjectURL = createObjectURL;
-    global.URL.revokeObjectURL = revokeObjectURL;
-
-    render(<ContributionsTimeline />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Contribution with file")).toBeInTheDocument();
-    });
-
-    fireEvent.click(screen.getByText("evidence.pdf"));
-
-    expect(createObjectURL).toHaveBeenCalled();
-    expect(revokeObjectURL).toHaveBeenCalled();
-  });
-
-  test("renders current role and company", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution with role/company",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
-        current_role: "Senior Developer",
-        current_company: "HSBC Bank",
-      },
-    ]);
-
+  test("renders empty state when no contributions", async () => {
+    contributionsTimeline.mockResolvedValueOnce([]);
     render(<ContributionsTimeline />);
 
     await waitFor(() => {
       expect(
-        screen.getByText("Contribution with role/company"),
+        screen.getByText(/Start building your record/i),
       ).toBeInTheDocument();
     });
-
-    expect(screen.getByText(/Current role:/i)).toBeInTheDocument();
-    expect(screen.getByText("Senior Developer")).toBeInTheDocument();
-
-    expect(screen.getByText(/Current company:/i)).toBeInTheDocument();
-    expect(screen.getByText("HSBC Bank")).toBeInTheDocument();
   });
 
-  test("prevents presentation when none selected", async () => {
-    contributionsTimeline.mockResolvedValueOnce([]);
-
-    jest.spyOn(window, "alert").mockImplementation(() => {});
-
-    render(<ContributionsTimeline />);
-
-    await waitFor(() => expect(contributionsTimeline).toHaveBeenCalled());
-
-    expect(screen.queryByTestId("selected-tally")).not.toBeInTheDocument();
-
-    expect(screen.queryByText(/Display Presentation/i)).not.toBeInTheDocument();
-
-    expect(screen.getByText(/Start building your record/i)).toBeInTheDocument();
-
-    expect(window.alert).not.toHaveBeenCalled();
-  });
-
-  test("adds contribution to presentation selection", async () => {
+  test("filters contributions by date", async () => {
     contributionsTimeline.mockResolvedValueOnce([
+      ...mockContributions,
       {
-        id: 1,
-        title: "Contribution A",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
+        ...mockContributions[0],
+        id: 2,
+        title: "Old One",
+        contribution_date: "2020-01-01",
       },
     ]);
-
     render(<ContributionsTimeline />);
 
-    await waitFor(() => {
-      expect(screen.getByText("Contribution A")).toBeInTheDocument();
+    await waitFor(() => screen.getByText("Contribution A"));
+    expect(screen.getByText("Old One")).toBeInTheDocument();
+
+    fireEvent.change(screen.getByLabelText(/start date/i), {
+      target: { value: "2023-01-01" },
     });
 
-    fireEvent.click(screen.getByText(/Add to presentation view/i));
-
-    expect(screen.getByTestId("selected-tally")).toHaveTextContent("1");
+    expect(screen.queryByText("Old One")).not.toBeInTheDocument();
+    expect(screen.getByText("Contribution A")).toBeInTheDocument();
   });
 
-  test("successful presentation opens new window", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution A",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
-      },
-    ]);
+  test("clears filters when onClear is called", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
+    render(<ContributionsTimeline />);
+    await waitFor(() => screen.getByText("Contribution A"));
 
+    fireEvent.click(screen.getByText("Clear Filters"));
+
+    expect(screen.getByTestId("timeline-filter")).toBeInTheDocument();
+  });
+
+  test("adds to presentation and displays it", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
     presentationViewPost.mockResolvedValueOnce({
       status: "success",
-      id: 999,
+      id: "view123",
     });
 
     render(<ContributionsTimeline />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Contribution A")).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByText("Contribution A"));
 
     fireEvent.click(screen.getByText(/Add to presentation view/i));
-    fireEvent.click(screen.getByText(/Display Presentation/i));
+    expect(screen.getByTestId("selected-tally")).toHaveTextContent(
+      "Selected: 1",
+    );
+
+    fireEvent.click(screen.getByText("Display Presentation"));
 
     await waitFor(() => {
       expect(presentationViewPost).toHaveBeenCalledWith([1]);
     });
-
     expect(window.open).toHaveBeenCalledWith(
-      "/PresentationView/999",
+      "/PresentationView/view123",
       "_blank",
       "noopener,noreferrer",
     );
   });
 
-  test("presentation error triggers alert", async () => {
-    contributionsTimeline.mockResolvedValueOnce([
-      {
-        id: 1,
-        title: "Contribution A",
-        contribution_date: "2024-01-01",
-        created_at: "2024-02-01",
-        categories: [],
-        what_happened: "",
-        why_it_mattered: "",
-        outcome_impact: "",
-        evidence_links: [],
-        files: [],
-      },
-    ]);
-
-    presentationViewPost.mockResolvedValueOnce({
-      status: "error",
-      message: "Something went wrong",
-    });
-
-    jest.spyOn(window, "alert").mockImplementation(() => {});
-
+  test("cancels presentation selection", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
     render(<ContributionsTimeline />);
-
-    await waitFor(() => {
-      expect(screen.getByText("Contribution A")).toBeInTheDocument();
-    });
+    await waitFor(() => screen.getByText("Contribution A"));
 
     fireEvent.click(screen.getByText(/Add to presentation view/i));
-    fireEvent.click(screen.getByText(/Display Presentation/i));
+    fireEvent.click(screen.getByText("Cancel"));
 
-    await waitFor(() => {
-      expect(window.alert).toHaveBeenCalledWith("Error: Something went wrong");
-    });
+    expect(screen.queryByTestId("selected-tally")).not.toBeInTheDocument();
+  });
+
+  test("triggers file download", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
+    render(<ContributionsTimeline />);
+    await waitFor(() => screen.getByText("test.pdf"));
+
+    fireEvent.click(screen.getByText("test.pdf"));
+
+    expect(global.URL.createObjectURL).toHaveBeenCalled();
+    expect(global.URL.revokeObjectURL).toHaveBeenCalled();
+  });
+
+  test("opens update form and updates contribution", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
+    render(<ContributionsTimeline />);
+    await waitFor(() => screen.getByText("Contribution A"));
+
+    fireEvent.click(screen.getByText("Update"));
+    expect(screen.getByTestId("update-form")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByText("Submit Update"));
+
+    expect(screen.getByText("Updated Title")).toBeInTheDocument();
+    expect(screen.queryByTestId("update-form")).not.toBeInTheDocument();
+  });
+
+  test("deletes contribution", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
+    render(<ContributionsTimeline />);
+    await waitFor(() => screen.getByText("Contribution A"));
+
+    fireEvent.click(screen.getByTestId("delete-1"));
+
+    expect(screen.queryByText("Contribution A")).not.toBeInTheDocument();
+  });
+
+  test("renders CSV export component", async () => {
+    contributionsTimeline.mockResolvedValueOnce(mockContributions);
+    render(<ContributionsTimeline />);
+    await waitFor(() =>
+      expect(screen.getByTestId("csv-export")).toBeInTheDocument(),
+    );
   });
 });

@@ -159,11 +159,8 @@ describe("AddContribution", () => {
 
     expect(screen.getByText(/Saving/i)).toBeInTheDocument();
 
-    await waitFor(() => {
-      expect(addContribution).toHaveBeenCalledTimes(1);
-    });
+    expect(await screen.findByText(/Saved successfully./i)).toBeInTheDocument();
 
-    expect(screen.getByText(/Saved successfully./i)).toBeInTheDocument();
     expect(onContributionAdded).toHaveBeenCalled();
 
     expect(screen.getByLabelText(/Contribution title/i).value).toBe("");

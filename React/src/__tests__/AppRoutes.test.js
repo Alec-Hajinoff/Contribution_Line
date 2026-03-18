@@ -19,55 +19,54 @@ jest.mock("../LogoutComponent", () => () => (
 jest.mock("../PresentationView", () => () => (
   <div data-testid="presentation-view">PresentationView</div>
 ));
+jest.mock("../VerifyEmail", () => () => (
+  <div data-testid="verify-email">VerifyEmail</div>
+));
+jest.mock("../PasswordReset", () => () => (
+  <div data-testid="password-reset">PasswordReset</div>
+));
 
 describe("AppRoutes", () => {
-  test("renders MainRegLog on /", () => {
+  const renderAtRoute = (route) => {
     render(
-      <MemoryRouter initialEntries={["/"]}>
+      <MemoryRouter initialEntries={[route]}>
         <AppRoutes />
       </MemoryRouter>,
     );
+  };
 
+  test("renders MainRegLog on /", () => {
+    renderAtRoute("/");
     expect(screen.getByTestId("main-reg-log")).toBeInTheDocument();
   });
 
   test("renders RegisteredPage on /RegisteredPage", () => {
-    render(
-      <MemoryRouter initialEntries={["/RegisteredPage"]}>
-        <AppRoutes />
-      </MemoryRouter>,
-    );
-
+    renderAtRoute("/RegisteredPage");
     expect(screen.getByTestId("registered-page")).toBeInTheDocument();
   });
 
   test("renders UserDashboard on /UserDashboard", () => {
-    render(
-      <MemoryRouter initialEntries={["/UserDashboard"]}>
-        <AppRoutes />
-      </MemoryRouter>,
-    );
-
+    renderAtRoute("/UserDashboard");
     expect(screen.getByTestId("user-dashboard")).toBeInTheDocument();
   });
 
   test("renders LogoutComponent on /LogoutComponent", () => {
-    render(
-      <MemoryRouter initialEntries={["/LogoutComponent"]}>
-        <AppRoutes />
-      </MemoryRouter>,
-    );
-
+    renderAtRoute("/LogoutComponent");
     expect(screen.getByTestId("logout-component")).toBeInTheDocument();
   });
 
   test("renders PresentationView on /PresentationView/:id", () => {
-    render(
-      <MemoryRouter initialEntries={["/PresentationView/123"]}>
-        <AppRoutes />
-      </MemoryRouter>,
-    );
-
+    renderAtRoute("/PresentationView/123");
     expect(screen.getByTestId("presentation-view")).toBeInTheDocument();
+  });
+
+  test("renders VerifyEmail on /VerifyEmail", () => {
+    renderAtRoute("/VerifyEmail");
+    expect(screen.getByTestId("verify-email")).toBeInTheDocument();
+  });
+
+  test("renders PasswordReset on /PasswordReset", () => {
+    renderAtRoute("/PasswordReset");
+    expect(screen.getByTestId("password-reset")).toBeInTheDocument();
   });
 });

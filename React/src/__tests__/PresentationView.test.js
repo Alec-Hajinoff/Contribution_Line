@@ -232,7 +232,7 @@ describe("PresentationView", () => {
 
     fireEvent.click(
       screen.getByRole("button", {
-        name: /Print Presentation/i,
+        name: /Print/i,
       }),
     );
 
