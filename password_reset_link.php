@@ -25,13 +25,16 @@ if (empty($mailUsername) || empty($mailPassword)) {
 }
 
 $allowed_origins = [
-    'http://localhost:3000'
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
 ];
 
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$origin = $_SERVER['HTTP_ORIGIN'] ?? null;
 
-if (in_array($origin, $allowed_origins)) {
+if ($origin !== null && in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
+} elseif ($origin === null) {
 } else {
     header('HTTP/1.1 403 Forbidden');
     exit;
@@ -47,8 +50,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 }
 
 $servername = '127.0.0.1';
-$username = 'root';
-$passwordServer = '';
+$username = 'contribution_line_user';
+$passwordServer = 'gb5CQ4yP5Xu4iQB';
 $dbname = 'contribution_line';
 
 try {
@@ -111,7 +114,7 @@ try {
             error_log('password_reset_link.php: Failed to store token in database for user ID: ' . $user['id']);
         }
 
-        $resetLink = 'http://localhost:3000/PasswordReset?token=' . urlencode($resetToken);
+        $resetLink = 'https://contributionline.com/PasswordReset?token=' . urlencode($resetToken);
 
         $mail = new PHPMailer(true);
 
