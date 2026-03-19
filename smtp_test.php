@@ -16,7 +16,7 @@ $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
 $mail->Port = 587;
 
 $mail->setFrom('team@contributionline.com', 'Test');
-$mail->addAddress('yourpersonalemail@example.com');
+$mail->addAddress('hajinoff@gmail.com');
 
 $mail->Subject = 'SMTP Test';
 $mail->Body = 'Testing SMTP';
