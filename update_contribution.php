@@ -1,11 +1,17 @@
 <?php
 require_once 'session_config.php';
 
-$allowed_origins = ['http://localhost:3000'];
-$origin = $_SERVER['HTTP_ORIGIN'] ?? '';
+$allowed_origins = [
+    'http://localhost:3000',
+    'https://contributionline.com',
+    'https://www.contributionline.com'
+];
 
-if (in_array($origin, $allowed_origins)) {
+$origin = $_SERVER['HTTP_ORIGIN'] ?? null;
+
+if ($origin !== null && in_array($origin, $allowed_origins)) {
     header("Access-Control-Allow-Origin: $origin");
+} elseif ($origin === null) {
 } else {
     header('HTTP/1.1 403 Forbidden');
     exit;
@@ -33,7 +39,7 @@ if (!$contribution_id) {
 }
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=contribution_line', 'root', '', [
+    $pdo = new PDO('mysql:host=127.0.0.1;dbname=contribution_line', 'contribution_line_user', 'gb5CQ4yP5Xu4iQB', [
         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
         PDO::ATTR_EMULATE_PREPARES => false
