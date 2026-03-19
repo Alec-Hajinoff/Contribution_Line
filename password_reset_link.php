@@ -123,15 +123,13 @@ try {
 
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
-            $mail->Host = 'smtp.123-reg.co.uk';
-            $mail->SMTPAuth = true;
-            $mail->Username = $mailUsername;
-            $mail->Password = $mailPassword;
-            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-            $mail->Port = 587;
-            $mail->Timeout = 30;
+            $mail->Host = 'localhost';
+            $mail->Port = 25;
+            $mail->SMTPAuth = false;
+            $mail->SMTPSecure = false;
 
-            $mail->setFrom($mailUsername, 'Contribution Line');
+            $mail->setFrom('team@contributionline.com', 'Contribution Line');
+
             $mail->addAddress($email, $user['name']);
 
             $mail->isHTML(false);
