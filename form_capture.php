@@ -128,7 +128,7 @@ try {
         try {
             $mail->SMTPDebug = SMTP::DEBUG_OFF;
             $mail->isSMTP();
-            $mail->Host = 'smtp.gmail.com';
+            $mail->Host = 'smtp.123-reg.co.uk';
             $mail->SMTPAuth = true;
             $mail->Username = $mailUsername;
             $mail->Password = $mailPassword;
