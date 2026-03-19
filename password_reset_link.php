@@ -18,12 +18,6 @@ if ($config === false) {
 $mailUsername = $config['MAIL_USERNAME'];
 $mailPassword = $config['MAIL_PASSWORD'];
 
-if (empty($mailUsername) || empty($mailPassword)) {
-    error_log('password_reset_link.php: Gmail credentials not found in .env file');
-    echo json_encode(['success' => false, 'message' => 'Server configuration error']);
-    exit;
-}
-
 $allowed_origins = [
     'http://localhost:3000',
     'https://contributionline.com',
