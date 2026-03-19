@@ -7,16 +7,6 @@ use PHPMailer\PHPMailer\Exception;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
 
-$config = parse_ini_file(__DIR__ . '/.env', false, INI_SCANNER_RAW);
-if ($config === false) {
-    error_log('Failed to parse .env file');
-    echo json_encode(['success' => false, 'message' => 'Server configuration error']);
-    exit;
-}
-
-$mailUsername = $config['MAIL_USERNAME'];
-$mailPassword = $config['MAIL_PASSWORD'];
-
 $allowed_origins = [
     'http://localhost:3000',
     'https://contributionline.com',
